@@ -1,7 +1,6 @@
-const app = require('express');
+const express = require('express');
 
-const yaml = require('yaml');
-
+const app = express();
 
 app.get('/', (req, res) => {
     res.send('dig dug portal');
