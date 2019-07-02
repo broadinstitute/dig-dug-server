@@ -1,0 +1,22 @@
+portal: T2D
+content:
+  shared: "https://raw.github.com/broadinstitute/dig-dug-shared"
+  www: "https://raw.github.com/broadinstitute/dig-dug-t2d"
+kb:
+  name: T2D
+  mdv: mdv38
+  host: "ec2-34-229-106-174.compute-1.amazonaws.com"
+  port: 8090
+  expose:
+    name: #multiple functions
+      method: POST
+      path: "/dccservices/getRegionData"
+    name2:
+      method: GET
+      path: "/dccservices/getMetadata"
+    postTweet:
+      method: POST
+      path: "/tweet/submit"
+    testme:
+      method: GET
+      path : "/testME"
