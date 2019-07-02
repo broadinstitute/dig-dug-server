@@ -1,8 +1,5 @@
 const server = require('express');
 
-
-
-
 function route_github_static_content(config) {
 
     let path = config.content.www;
@@ -12,7 +9,6 @@ function route_github_static_content(config) {
     });
 }
 
-app.listen(8090);
 //function not used yet
 function route_shared_static_content(config) {
     let path = config.content.shared;
