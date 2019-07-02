@@ -1,0 +1,7 @@
+# Set a username here
+userName: dustin
+
+# some config config options
+options :
+   displayTime : true
+   displayGreating : true

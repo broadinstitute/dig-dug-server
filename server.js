@@ -1,61 +1,65 @@
-const server = require('express');
-
-function route_github_static_content(config) {
-
-    let path = config.content.www;
-
-    app.get('/www/:path*', function (req, res) {
-      res.redirect(`${path}/${req.path}`);
-    });
-}
-
-//function not used yet
-function route_shared_static_content(config) {
-    let path = config.content.shared;
-
-    server.get('/shared/:path*', (req, res) => {
-        res.redirect(`${path}/${req.path}`);
-    });
-}
-
-function route_kb_api_requests(config) {
-    let host = config.kb.host;
-    let port = config.kb.port;
-    let expose = config.kb.expose;
-    let routeNames = Object.keys(expose); //what entry names are exposed?
+const express = require('express');
+var app = express();
+const util = require('util')
+const yaml = require('js-yaml');
+const fs = require('fs');
 
 
-    routeNames.forEach((name, data) => {
-        if (data.method == 'POST') {
-            server.post(`/${name}`, (req, res) => {
-                res.redirect(data.path);
-            });
-        } else if (data.method == 'GET') {
-            server.get(`/${name}`, (req, res) => {
-                res.redirect(data.path);
-            });
-        }
-    });
-}
+  function route_github_static_content(config) {
+
+      var path = config.content.www;
+
+      //console.log("I am inside  " + configpath);
+      app.get('/www/:path*', function (req, res) {
+        // console.log(util.inspect(req.params));
+        res.redirect(`${path}/${req.params.path}`);
+      });
+  }
+
+  //function not used yet
+  function route_shared_static_content(config) {
+      let path = config.content.shared;
+
+      app.get('/shared/:path*', (req, res) => {
+          res.redirect(`${path}/${req.path}`);
+      });
+  }
+
+  function route_kb_api_requests(config) {
+
+      let host = config.kb.host;
+      let port = config.kb.port;
+      let expose = config.kb.expose;
+      let routeNames = Object.keys(expose); //what entry names are exposed?
+
+
+      routeNames.forEach((name, data) => {
+          if (data.method == 'POST') {
+              server.post(`/${name}`, (req, res) => {
+                  res.redirect(data.path);
+              });
+          } else if (data.method == 'GET') {
+              server.get(`/${name}`, (req, res) => {
+                  res.redirect(data.path);
+              });
+          }
+      });
+  }
 
 function start(config) {
-    route_github_static_content(config);
-    route_kb_api_requests(config);
-    //port=config.port
-    //server.listen(8090);
+      util.inspect(config);
+    //  console.log(typeof route_github_static_content(config));
+      route_github_static_content(config);
+      route_kb_api_requests(config);
+      //port=config.port
+      //server.listen(8090);
+      console.log('hello i am running');
 
-    let http = require('http');
+      app.listen(8090);
+  }
 
-    let hostname = '127.0.0.1';
-    let port = 8090; //use config.port later
+  module.exports = {
+    start: start
+  }
 
-    let server = http.createServer((req, res) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end('Dig Dug Portal\n');
-    });
-
-    server.listen(port, hostname, () => {
-        console.log(`Server running at http://${hostname}:${port}/`);
-    });
-}
+//var githubpath = module.exports.route_github_static_content(config.content.www);
