@@ -2,6 +2,17 @@ const server = require('express');
 
 
 
+
+function route_github_static_content(config) {
+
+    let path = config.content.www;
+
+    app.get('/www/:path*', function (req, res) {
+      res.redirect(`${path}/${req.path}`);
+    });
+}
+
+app.listen(8090);
 //function not used yet
 function route_shared_static_content(config) {
     let path = config.content.shared;
