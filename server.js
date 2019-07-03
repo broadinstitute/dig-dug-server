@@ -4,6 +4,7 @@ const util = require('util')
 const yaml = require('js-yaml');
 const fs = require('fs');
 
+
   function route_github_static_content(config) {
       var path = config.content.www;
       app.get('/www/:path*', function (req, res) {
@@ -20,26 +21,30 @@ const fs = require('fs');
   }
 
   function route_kb_api_requests(config) {
+
       let host = config.kb.host;
       let port = config.kb.port;
       let expose = config.kb.expose;
+      let mdv = config.kb.mdv;
+      let baseurl = "https://" + host + ":" + port;
       let routeNames = Object.keys(expose); //what entry names are exposed?
-
-      routeNames.forEach((name, data) => {
+      routeNames.forEach((name) => {
+        let data =  expose[name]
           if (data.method == 'POST') {
-              server.post(`/${name}`, (req, res) => {
-                  res.redirect(data.path);
+              app.post(`/${name}`, (req, res) => {
+                  res.redirect(baseurl + data.path);
               });
           } else if (data.method == 'GET') {
-              server.get(`/${name}`, (req, res) => {
-                  res.redirect(data.path);
+              app.get(`/${name}`, (req, res) => {
+                  res.redirect(baseurl + data.path);
               });
           }
       });
+
   }
 
 function start(config) {
-      util.inspect(config);
+
       route_github_static_content(config);
       route_kb_api_requests(config);
       app.listen(8090);
