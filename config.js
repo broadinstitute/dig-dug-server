@@ -1,14 +1,12 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 
-try {
-    const config = yaml.safeLoad(fs.readFileSync('config.yml', 'utf-8'));
-    //const show = JSON.stringify(config, null, 4);
-    //console.log(show);
 
-} catch (e) {
-    console.log(e);
+function loadConfig(fileName){
+  return yaml.safeLoad(fs.readFileSync(fileName, 'utf-8'));
 
 }
 
-module.exports.config;
+module.exports = {
+  loadConfig: loadConfig
+}

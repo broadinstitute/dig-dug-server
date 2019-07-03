@@ -1,11 +1,7 @@
-const server = require('./server'); //load server file
+
 const config = require('./config'); //load config file
 const opts = require('optparse'); //load option parser library
+const server = require('./server'); //load server file
+const startConfig = config.loadConfig(`config.yml`); //load config yml file
 
-//let loaded_config = config.load(args.config);
-
-// use loaded_config here for other stuff (e.g. test connection to KB)
-
-
-//server.start(loaded_config);
-//server.start(config);
+server.start(startConfig); // start the node js server
