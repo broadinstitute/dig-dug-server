@@ -10,13 +10,13 @@ kb:
   expose:
     name: #multiple functions
       method: POST
-      path: "/dccservices/getRegionData"
+      urlpath: "/dccservices/getRegionData"
     name2:
       method: GET
-      path: "/dccservices/getMetadata?mdv={{mdv}}"
+      urlpath: "/dccservices/getMetadata?mdv={{mdv}}"
     postTweet:
       method: POST
-      path: "/tweet/submit"
+      urlpath: "/tweet/submit"
     testme:
       method: GET
-      path : "/testME"
+      urlpath : "/testME"

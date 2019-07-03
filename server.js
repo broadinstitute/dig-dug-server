@@ -4,11 +4,15 @@ const util = require('util')
 const yaml = require('js-yaml');
 const fs = require('fs');
 
-
   function route_github_static_content(config) {
       var path = config.content.www;
-      app.get('/www/:path*', function (req, res) {
-        res.redirect(`${path}/${req.params.path}`);
+      app.get('/www/:filePath*', function (req, res) {
+      //  res.redirect(`${path}/${req.params.path}`);
+      let fileName = "hello.text";
+      let filePath = path + "/" + req.params.filePath;
+      console.log(filePath + " filePath");
+      //linkProxy(`${path}/${req.params.path}`);
+      linkProxy(fileName, filePath);
       });
   }
 
@@ -21,7 +25,6 @@ const fs = require('fs');
   }
 
   function route_kb_api_requests(config) {
-
       let host = config.kb.host;
       let port = config.kb.port;
       let expose = config.kb.expose;
@@ -40,7 +43,12 @@ const fs = require('fs');
               });
           }
       });
+  }
 
+  function linkProxy(fileName, url){
+    var request = require('request');
+    let fileStream = fs.createWriteStream(fileName);
+    request(url).pipe(fileStream);
   }
 
 function start(config) {
