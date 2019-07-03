@@ -21,6 +21,7 @@
     "express": "^4.17.1",
     "js-yaml": "^3.13.1",
     "nodemon": "^1.19.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "url-exists": "^1.0.3"
   }
 }

@@ -3,13 +3,22 @@ var app = express();
 const util = require('util')
 const yaml = require('js-yaml');
 const fs = require('fs');
+const urlExists = require('url-exists');
 
   function route_github_static_content(config) {
     var request = require('request');
-      var path = config.content.www;
-      app.get('/www/:filePath*', function (req, res) {
-      let filePath = path + "/" + req.params.filePath;
-      req.pipe(request(filePath)).pipe(res);
+    var path = config.content.www;
+    app.get('/www/:filePath*', function (req, res) {
+          let filePath = path + "/" + req.params.filePath;
+          //check for error if file doesn't exist
+          urlExists(filePath, function(err, exists){
+             if (exists){
+                 req.pipe(request(filePath)).pipe(res)
+             }
+             else{
+                 res.status(404).send({error: "404: Github file not found"})
+             }
+          })
       });
   }
 
@@ -47,6 +56,9 @@ const fs = require('fs');
     let fileStream = fs.createWriteStream(fileName);
     request(url).pipe(fileStream);
   }
+
+
+
 
 function start(config) {
       route_github_static_content(config);
