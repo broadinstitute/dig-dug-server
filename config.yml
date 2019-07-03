@@ -1,6 +1,6 @@
 portal: T2D
 content:
-  # shared: "https://raw.github.com/broadinstitute/dig-dug-shared"
+  shared: "https://raw.github.com/broadinstitute/dig-dug-shared"
   www: "https://raw.githubusercontent.com/broadinstitute/dig-dug-static-resources/master/www"
 kb:
   name: T2D
