@@ -1,5 +1,5 @@
 const express = require('express');
-var app = express();
+const app = express();
 const util = require('util')
 const yaml = require('js-yaml');
 const fs = require('fs');
@@ -57,15 +57,13 @@ const urlExists = require('url-exists');
     request(url).pipe(fileStream);
   }
 
-
-
-
 function start(config) {
       route_github_static_content(config);
       route_kb_api_requests(config);
       app.listen(8090);
   }
 
-  module.exports = {
-    start: start
-  }
+
+module.exports = {
+start: start
+};

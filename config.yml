@@ -8,15 +8,12 @@ kb:
   host: "ec2-34-229-106-174.compute-1.amazonaws.com"
   port: 8090
   expose:
-    name: #multiple functions
+    getRegionData: #multiple functions
       method: POST
       urlpath: "/dccservices/getRegionData"
-    name2:
+    getMetadata:
       method: GET
-      urlpath: "/dccservices/getMetadata?mdv={{mdv}}"
-    postTweet:
-      method: POST
-      urlpath: "/tweet/submit"
+      urlpath: "/dccservices/getMetadata"
     testme:
       method: GET
       urlpath : "/testME"
