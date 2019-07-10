@@ -1,19 +1,22 @@
 
 const request = require('request');
 var cachedMetadata;
-var cachedPhenotype;
-var cachedDataset;
+var cachedPhenotypes;
+var cachedDatasets;
 const axios = require('axios');
 const util = require('util')
 
-function getMetadata(host, port, mdv)
+function getMetadata(config)
 {
+  let host = config.kb.host;
+  let port = config.kb.port;
+  let expose = config.kb.expose;
+  let mdv = config.kb.mdv;
+  let baseurl = "http://" + host + ":" + port;
+
 //build a baseurl
-var kbPath = "http://" + host + ":" + port + "/dccservices/getMetadata?mdv=" + mdv;
-// request(path, function(error, response, body)
-// {
-//   cachedMetadata = JSON.parse(body);
-// })//get the data and store it in global variable
+  var kbPath = baseurl + "/dccservices/getMetadata?mdv=" + mdv;
+
 axios.get(kbPath)
 .then(function (response){
   cachedMetadata = response.data;
@@ -24,14 +27,20 @@ axios.get(kbPath)
 })
 }
 
+function getDatasets(){
+    
+  //traverse the cachedMetadata and get the datasets
+  return cachedMetadata.experiments;
+
+}
+
 function getPhenotypes(){
   //traverse the cachedMetadata and get the phenotypes
-  let phenotypes = cachedMetadata.experiments;
-  console.log("phenotypes are: " + phenotypes);
+
 }
 
 
 module.exports = {
   getMetadata: getMetadata,
   getPhenotypes: getPhenotypes
-};
+}
