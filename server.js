@@ -7,6 +7,7 @@ const urlExists = require('url-exists');
 const request = require('request');
 const metadata = require('./metadata');
 
+
   function route_github_static_content(config) {
     var path = config.content.www;
     app.get('/www/:filePath*', function (req, res) {
@@ -94,12 +95,7 @@ function start(config) {
           metadata.getMetadata(host, port, mdv);
           //console.log(promise);
           //const promise2 = promise.then(cacheMetadata.getPhenotype());
-          metadata.getPhenotypes();
-
-
-         app.listen(8090);
-
-
+          app.listen(8090)
 
 
   }
