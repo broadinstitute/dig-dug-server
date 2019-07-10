@@ -17,10 +17,11 @@ request(path, function(error, response, body)
 function getPhenotypes(){
   //traverse the cachedMetadata and get the phenotypes
   let phenotypes = cachedMetadata.experiments;
+  console.log("phenotypes are: " + phenotypes);
 }
 
 
 module.exports = {
   getMetadata: getMetadata,
   getPhenotypes: getPhenotypes
-}
+};

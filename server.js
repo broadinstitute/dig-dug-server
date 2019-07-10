@@ -94,13 +94,16 @@ function start(config) {
           metadata.getMetadata(host, port, mdv);
           //console.log(promise);
           //const promise2 = promise.then(cacheMetadata.getPhenotype());
+          metadata.getPhenotypes();
 
 
-         app.listen(8090)
+         app.listen(8090);
+
+
 
 
   }
 
   module.exports = {
     start: start
-  }
+  };
