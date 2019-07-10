@@ -7,8 +7,8 @@ const util = require('util');
 var cache = {
   metadata: undefined,
   phenotypes: [],
-  datasets: [],
-}
+  datasets: []
+};
 
 function getMetadata(config)
   {
@@ -25,7 +25,6 @@ function getMetadata(config)
         cache.metadata = response.data;
         var datasets = getDatasets();
         var phenotypes = getPhenotypes();
-        return 10;
     })
     .catch(function(error){
         console.log(error)
@@ -84,9 +83,8 @@ function getPhenotypes(){
 return phenotypeMap;
 }
 
-
 module.exports = {
   getMetadata: getMetadata,
   getPhenotypes: getPhenotypes,
   getDatasets: getDatasets
-}
+};
