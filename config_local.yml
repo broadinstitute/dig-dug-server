@@ -1,7 +1,7 @@
 portal: T2D
 content:
   shared: "https://raw.github.com/broadinstitute/dig-dug-shared"
-  www: "https://raw.githubusercontent.com/broadinstitute/dig-dug-static-resources/master/www"
+  www: "file:///C:/Users/qhoang/Desktop/dig-dug-portal/dig-dug-portal/www"
 kb:
   name: T2D
   mdv:  mdv38
