@@ -8,7 +8,8 @@ function getMetadata(host, port, mdv)
     var path = "http://" + host + ":" + port + "/dccservices/getMetadata?mdv=" + mdv;
     request(path, function(error, response, body)
     {
-        cachedMetadata = JSON.parse(body);
+        //cachedMetadata = JSON.parse(body);
+        cachedMetadata = body;
     })//get the data and store it in global variable
 }
 

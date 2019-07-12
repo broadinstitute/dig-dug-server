@@ -9,8 +9,8 @@ const urlExists = require('url-exists');
 const request = require('request');
 const metadata = require('./metadata');
 
-function route_github_static_content(config) {
-    const resourcePath = config.content.www;
+function route_github_static_content(config, www) {
+    const resourcePath = www ? www : config.content.www; //set www to override if passed in
     const checkPath = new URL(resourcePath);
 
     //static resources are served local instead of github
@@ -22,8 +22,9 @@ function route_github_static_content(config) {
         //app.use('/www', express.static(path.join(__dirname, 'www')) );
     } else {
         app.get('/www/:filePath*', function (req, res) {
-            console.log("where");
-            let filePath = path + "/" + req.params.filePath;
+            let filePath = resourcePath + "/" + req.params.filePath;
+            //console.log("file: " + filePath);
+
             //check for error if file doesn't exist
             urlExists(filePath, function(err, exists){
                 if (exists){
@@ -87,7 +88,6 @@ function route_kb_api_requests(config) {
 
 }
 
-
 // function linkProxy(fileName, url){
 //   var fs = require('fs');
 //   let fileStream = fs.createWriteStream(fileName);
@@ -95,10 +95,8 @@ function route_kb_api_requests(config) {
 // }
 
 
-
-
-function start(config) {
-    route_github_static_content(config);
+function start(config, www) {
+    route_github_static_content(config, www);
     route_kb_api_requests(config);
 
     let host = config.kb.host;
@@ -108,13 +106,9 @@ function start(config) {
     metadata.getMetadata(host, port, mdv);
     //console.log(promise);
     //const promise2 = promise.then(cacheMetadata.getPhenotype());
-    metadata.getPhenotypes();
-
+    //metadata.getPhenotypes();
 
     app.listen(8090);
-
-
-
 
 }
 
