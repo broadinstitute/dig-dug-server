@@ -9,7 +9,6 @@ const urlExists = require('url-exists');
 const request = require('request');
 const metadata = require('./metadata');
 
-
 //function not used yet
 function route_shared_static_content(config) {
 	let path = config.content.shared;
@@ -54,8 +53,8 @@ function start(config) {
 
   }
 
-function route_github_static_content(config) {
-    const resourcePath = config.content.www;
+function route_github_static_content(config, www) {
+    const resourcePath = www ? www : config.content.www; //set www to override if passed in
     const checkPath = new URL(resourcePath);
 
     //static resources are served local instead of github
@@ -67,8 +66,9 @@ function route_github_static_content(config) {
         //app.use('/www', express.static(path.join(__dirname, 'www')) );
     } else {
         app.get('/www/:filePath*', function (req, res) {
-            console.log("where");
-            let filePath = path + "/" + req.params.filePath;
+            let filePath = resourcePath + "/" + req.params.filePath;
+            //console.log("file: " + filePath);
+
             //check for error if file doesn't exist
             urlExists(filePath, function(err, exists){
                 if (exists){

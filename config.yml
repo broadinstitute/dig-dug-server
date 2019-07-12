@@ -9,7 +9,7 @@ kb:
   host: "ec2-34-229-106-174.compute-1.amazonaws.com"
   port: 8090
   expose:
-    getRegionData: #multiple functions
+    getRegionData:
       method: POST
       urlpath: "/dccservices/getRegionData"
     getMetadata:
