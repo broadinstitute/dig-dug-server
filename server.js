@@ -8,7 +8,7 @@ const request = require('request');
 const metadata = require('./metadata');
 
 
-  function route_github_static_content(config) {
+function route_github_static_content(config) {
     var path = config.content.www;
     app.get('/www/:filePath*', function (req, res) {
           let filePath = path + "/" + req.params.filePath;
@@ -24,15 +24,15 @@ const metadata = require('./metadata');
       });
   }
 
-  //function not used yet
-  function route_shared_static_content(config) {
-      let path = config.content.shared;
-      app.get('/shared/:path*', (req, res) => {
-          res.redirect(`${path}/${req.path}`);
-      });
-  }
+//function not used yet
+function route_shared_static_content(config) {
+	let path = config.content.shared;
+	app.get('/shared/:path*', (req, res) => {
+		res.redirect(`${path}/${req.path}`);
+	});
+}
 
-  function route_kb_api_requests(config) {
+function route_kb_api_requests(config) {
       let host = config.kb.host;
       let port = config.kb.port;
       let expose = config.kb.expose;
@@ -42,7 +42,6 @@ const metadata = require('./metadata');
       let routeNames = Object.keys(expose); //what entry names are exposed?
       routeNames.forEach((name) => {
         let data =  expose[name];
-      //  console.log(name);
         //build the api link
         let apiPath = baseurl + data.urlpath;
         //console.log(apiPath);
@@ -63,10 +62,18 @@ const metadata = require('./metadata');
 function start(config) {
       route_github_static_content(config);
       route_kb_api_requests(config);
-      metadata.getMetadata(config);
-      app.listen(8090);
+     var promise1 = metadata.getMetadata(config);
+     var promise2 = promise1.then(function() {
+          app.listen(8090);
+        });
+
   }
 
-  module.exports = {
+app.get("/getDatasets", function(){
+	metadata.getDatasets();
+	metadata.getPhenotypes();
+})
+
+module.exports = {
     start: start
   }
