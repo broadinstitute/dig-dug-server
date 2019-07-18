@@ -44,19 +44,18 @@ function route_kb_api_requests(config) {
         let data =  expose[name];
         //build the api link
         let apiPath = baseurl + data.urlpath;
-        //console.log(apiPath);
           if (data.method == 'POST') {
               app.post(`/${name}`, (req, res) => {
-              }); //close app.post
-          } //close if
+              });
+          }
           else if (data.method == 'GET') {
               app.get(`/${name}*`, (req, res) => {
                      console.log("query", req.query);
                      //REMEMBER - check url exists
                     req.pipe(request({qs:req.query, uri: apiPath, json: true})).pipe(res);
-              }); //app.get
-          } //else if
-      }); //routeNames close
+              });
+          }
+      });
   }
 
 function start(config) {
@@ -69,10 +68,15 @@ function start(config) {
 
   }
 
-app.get("/getDatasets", function(){
-	metadata.getDatasets();
-	metadata.getPhenotypes();
-})
+app.get("/getDatasets", (req, res) => {
+	let dataset = metadata.getDatasets();
+	res.json(dataset);
+});
+
+app.get("/getPhenotypes", (req, res) => {
+	let phenotypes = metadata.getPhenotypes();
+	res.json(phenotypes);
+});
 
 module.exports = {
     start: start

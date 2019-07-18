@@ -33,73 +33,55 @@ function getMetadata(config)
   }
 
 function getDatasets(){
-    console.log("I am getting the datasets" + cache.metadata);
-    var datasetArray = [];
-    var datasetNameIdMap = {};
-    for (item in cache.metadata ){
-        for (subitem in cache.metadata [item]){
-            Object.keys(cache.metadata [item][subitem]).forEach(key => {
-                var sampleGroups = cache.metadata [item][subitem]['sample_groups'];
-                for (sampleGroup in sampleGroups){
-                    Object.keys(sampleGroups[sampleGroup]).forEach(key => {
-                        if (datasetArray.indexOf(sampleGroups[sampleGroup]['id'])==-1) datasetArray.push(sampleGroups[sampleGroup]['id']);
+	var datasetArray = [];
+	var datasetNameIdMap = {};
+	for (item in cache.metadata ){
+		for (subitem in cache.metadata [item]){
+			Object.keys(cache.metadata [item][subitem]).forEach(key => {
+				var sampleGroups = cache.metadata [item][subitem]['sample_groups'];
+				for (sampleGroup in sampleGroups){
+					Object.keys(sampleGroups[sampleGroup]).forEach(key => {
+						if (datasetArray.indexOf(sampleGroups[sampleGroup]['id']) < 0){
+							datasetArray.push(sampleGroups[sampleGroup]['id'])
+						}
                     });
                 }
             })
         }
     }
-    //console.log(datasetArray);
+return datasetArray;
 }
-
-//initially create the map without any key
-var map = {};
-
-function addValueToList(key, value) {
-    //if the list is already created for the "key", then uses it
-    //else creates new list for the "key" to store multiple values in it.
-    map[key] = map[key] || [];
-    map[key].push(value);
-}
-
 
 function getPhenotypes(){
-    //DONT USE VAR
-  var phenotypeMap = {};
-
-  //traverse the cachedMetadata and get the phenotypes
-  for (item in cache.metadata){
-      for (subitem in cache.metadata [item]){
-          Object.keys(cache.metadata [item][subitem]).forEach(key => {
-              let sampleGroups = cache.metadata [item][subitem]['sample_groups'];
-              for (sampleGroup in sampleGroups){
-                  Object.keys(sampleGroups[sampleGroup]).forEach(key => {
-                    let phenotypeObj = sampleGroups[sampleGroup]['phenotypes'];
-					let sameGroupArray = [];
-                    for(keyWord in phenotypeObj){
-                        let keys = Object.keys(phenotypeObj[keyWord])
-                        let groupName = phenotypeObj[keyWord]['group']; // this will be the key
-                        let phenotypeName = phenotypeObj[keyWord]['name']; // this will be added to a list and mapped to its groupName
-						if(groupName in phenotypeMap){
-						//if the key already exists in the map
-							console.log(groupName + "I already exist");
-                            if (sameGroupArray.indexOf(phenotypeName)==-1) sameGroupArray.push(phenotypeName);
-							phenotypeMap[groupName] = sameGroupArray;
-							}
-						else{
-							sameGroupArray = [];
-							if (sameGroupArray.indexOf(phenotypeName)==-1) sameGroupArray.push(phenotypeName);
-							phenotypeMap[groupName] = sameGroupArray;
-						}
-                    }
-
-                  })
-              }
-          })
-      }
-  }
-
-console.log(phenotypeMap);
-
+	var phenotypeMap = {};
+	//traverse the cachedMetadata and get the phenotypes
+	for (item in cache.metadata){
+		for (subitem in cache.metadata [item]){
+			Object.keys(cache.metadata [item][subitem]).forEach(key => {
+				let sampleGroups = cache.metadata [item][subitem]['sample_groups'];
+				for (sampleGroup in sampleGroups){
+					Object.keys(sampleGroups[sampleGroup]).forEach(key => {
+						let phenotypeObj = sampleGroups[sampleGroup]['phenotypes'];
+						for(keyWord in phenotypeObj){
+							let keys = Object.keys(phenotypeObj[keyWord])
+							let groupName = phenotypeObj[keyWord]['group']; //key
+							let phenotypeName = phenotypeObj[keyWord]['name']; // value in a list
+							//if key already exist in the map
+							if (!!phenotypeMap[groupName]) {
+								if (phenotypeMap[groupName].indexOf(phenotypeName) < 0) {
+									phenotypeMap[groupName].push(phenotypeName);
+						        }
+						    }
+							else {
+						    	phenotypeMap[groupName] = [phenotypeName];
+						    }
+                    	}
+                    })
+                }
+            })
+        }
+    }
+return phenotypeMap;
 }
 
 
