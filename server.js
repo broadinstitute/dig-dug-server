@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const url = require('url');
 const app = express();
@@ -8,6 +9,23 @@ const fs = require('fs');
 const urlExists = require('url-exists');
 const request = require('request');
 const metadata = require('./metadata');
+const google = require('./google');
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use(cookieParser());
+
+/* GET home page. */
+app.get('/', function(req, res, next) {
+    let name = req.cookies.name;
+    res.render('index', { title: 'Dig Dug Portal', name: name });
+});
+
+//Google authentication
+app.get('/login', google.logInLink);
+app.get('/oauth2callback', google.oauth2callback);
 
 function route_github_static_content(config, www) {
     const resourcePath = www ? www : config.content.www; //set www to override if passed in
@@ -94,6 +112,13 @@ function route_kb_api_requests(config) {
 //   request(url).pipe(fileStream);
 // }
 
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
 
 function start(config, www) {
     route_github_static_content(config, www);
