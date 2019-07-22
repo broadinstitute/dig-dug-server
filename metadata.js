@@ -60,7 +60,7 @@ function getPhenotypes(){
 					Object.keys(sampleGroups[sampleGroup]).forEach(key => {
 						let phenotypeObj = sampleGroups[sampleGroup]['phenotypes'];
 						for(keyWord in phenotypeObj){
-							let keys = Object.keys(phenotypeObj[keyWord])
+							let keys = Object.keys(phenotypeObj[keyWord]);
 							let groupName = phenotypeObj[keyWord]['group']; //key
 							let phenotypeName = phenotypeObj[keyWord]['name']; // value in a list
 							//if key already exist in the map
