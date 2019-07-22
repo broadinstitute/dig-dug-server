@@ -9,4 +9,4 @@ function loadConfig(fileName){
 
 module.exports = {
   loadConfig: loadConfig
-}
+};

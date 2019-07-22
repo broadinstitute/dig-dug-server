@@ -62,3 +62,4 @@ typings/
 
 # ide config/settings files
 .idea/*
+google.json
