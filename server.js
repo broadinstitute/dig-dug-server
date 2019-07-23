@@ -106,7 +106,7 @@ function start(config) {
     route_kb_api_requests(config);
     var promise1 = metadata.getMetadata(config);
     var promise2 = promise1.then(function() {
-        app.listen(8090);
+        app.listen(8090, () => console.log("Server started!"));
     });
 }
 
