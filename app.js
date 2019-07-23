@@ -20,7 +20,7 @@ const args = minimist(process.argv.slice(2), options);
 //const startConfig = config.loadConfig('config.yml'); //load config yml file
 //const localConfig = config.loadConfig('config_local.yml'); //local static www folder
 
-console.log("hey: " + JSON.stringify(args, null, 4));
+//console.log("hey: " + JSON.stringify(args, null, 4));
 //console.log("there: " + args.config);
 
 let override_msg = args.www ? `with www=${args.www} ` : '';
