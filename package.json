@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/broadinstitute/dig-dug-portal#readme",
   "dependencies": {
+    "aws-sdk": "^2.498.0",
     "axios": "^0.19.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",

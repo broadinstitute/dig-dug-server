@@ -1,25 +1,58 @@
 const {OAuth2Client} = require('google-auth-library');
 const http = require('http');
 const url = require('url');
-const opn = require('opn');
-const destroyer = require('server-destroy');
+//const opn = require('opn');
+//const destroyer = require('server-destroy');
+const secrets = require('./secrets');
+const secretID = 'google-oauth-portal';
 
 // Download your OAuth2 configuration from the Google
-const keys = require('./google.json');
+//const keys = require('./google.json');
+//const keys = "";
+
+//OAuth keys are now located in AWS Secret Manager
+secrets.getSecret(secretID)
+    .then((data) => {
+        if ('SecretString' in data) {
+            //console.log(data.SecretString);
+            return data.SecretString;
+
+        } else {
+            let buf = new ArrayBuffer(data.SecretBinary, 'base64');
+            // decode the secret
+            //console.log(buf.toString('ascii'));
+            return buf.toString('ascii');
+        }
+    })
+    .then((secrets) => {
+        const keys = JSON.parse(secrets);
+        return oAuth2Client = new OAuth2Client(keys.client_id, keys.client_secret, `http://localhost:8090${keys.redirect_uri_path}`);
+       //return oAuth2Client;
+    });
 
 /**
  * Start by acquiring a pre-authenticated oAuth2 client.
  */
 
-const oAuth2Client = new OAuth2Client(
-    keys.web.client_id,
-    keys.web.client_secret,
-    keys.web.redirect_uris[0]
-);
+// const oAuth2Client = new OAuth2Client(
+//     // keys.web.client_id,
+//     // keys.web.client_secret,
+//     // keys.web.redirect_uris[0]
+//
+//     keys.client_id, keys.client_secret, keys.redirect_uri
+// );
 
-const logInLink = function (req, res, next) {
+const logInLink = async function (req, res, next) {
     // Generate the url that will be used for the consent dialog.
-    const authorizeUrl = oAuth2Client.generateAuthUrl({
+
+    //const keys = await secrets.getSecret(secretID).catch(err => (console.log(err)));
+
+    // if(keys)
+    //     const oAuth2Client = new OAuth2Client(
+    //         keys.client_id, keys.client_secret, keys.redirect_uri
+    //     );
+
+    const authorizeUrl = await oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: 'profile email openid',
     });
