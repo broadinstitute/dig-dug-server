@@ -104,6 +104,7 @@ function route_github_static_content(config, www) {
 function start(config) {
     route_github_static_content(config);
     route_kb_api_requests(config);
+    google.useConfig(config);
     var promise1 = metadata.getMetadata(config);
     var promise2 = promise1.then(function() {
         app.listen(8090, () => console.log("Server started!"));

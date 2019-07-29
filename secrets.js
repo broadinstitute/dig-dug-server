@@ -21,20 +21,20 @@ function getSecret(secretId) {
 }
 
 // example usage
-const secrets = getSecret(secret).then((data) => {
-    if ('SecretString' in data) {
-        console.log(data.SecretString);
-        let parsed = JSON.parse(data.SecretString);
-        console.log("parsed" + parsed);
-        console.log("info: " + JSON.stringify(parsed, null, 4));
-        console.log("id: " + parsed.client_id);
-    } else {
-        let buf = new ArrayBuffer(data.SecretBinary, 'base64');
-
-        // decode the secret
-        console.log(buf.toString('ascii'));
-    }
-});
+// const secrets = getSecret(secret).then((data) => {
+//     if ('SecretString' in data) {
+//         console.log(data.SecretString);
+//         let parsed = JSON.parse(data.SecretString);
+//         console.log("parsed" + parsed);
+//         console.log("info: " + JSON.stringify(parsed, null, 4));
+//         console.log("id: " + parsed.client_id);
+//     } else {
+//         let buf = new ArrayBuffer(data.SecretBinary, 'base64');
+//
+//         // decode the secret
+//         console.log(buf.toString('ascii'));
+//     }
+// });
 
 module.exports = {
     getSecret: getSecret
