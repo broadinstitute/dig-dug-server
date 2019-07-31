@@ -26,12 +26,14 @@ $ node app --config another_config.yml
 ```   
 Optionally, you can use the shorthand `-c` flag instead of `--config`.
 
-### Overwriting static www folder
-In addition to selecting a different config file, you can choose to overwriting the static **www** folder for serving assets.  
+### Overriding static www folder
+In addition to selecting a different config file, you can choose to override the static **www** folder for serving assets.  
 ```
 $ node app --config config.yml -www http://linktodomain.com/files
 ```  
-The `--www` flag also comes with its own shorthand `-w`.
+The `--www` flag also comes with its own shorthand `-w`.  
+
+> **Note:** If you want to use serve static files locally, make sure you have the path correctly setup, according on your OS environment. You can change the *www* path in the config file, or override it at runtime, as stated above.
 
 # Requirements
 
