@@ -44,3 +44,5 @@ This new portal is currently using [AWS Secrets Manager](https://aws.amazon.com/
 ## Google Authentication
 
 In order to enable login into the portal with a Google account, it is first required to setup a project, acquire the necessary keys and secrets from [Google developer console](https://developers.google.com/identity/sign-in/web/sign-in). Such information is recommended to be saved to AWS Secrets Manager first, and then used when needed through `aws-sdk` API calls.
+
+## Node.js
