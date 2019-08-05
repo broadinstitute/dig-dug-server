@@ -8,8 +8,14 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const urlExists = require('url-exists');
 const request = require('request');
+const log4js = require('log4js');
+
 const metadata = require('./metadata');
 const google = require('./google');
+
+//set logger level
+const logger = log4js.getLogger();
+logger.level = 'all';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -105,9 +111,10 @@ function start(config) {
     route_github_static_content(config);
     route_kb_api_requests(config);
     google.useConfig(config);
+    logger.info("Getting Metadata, please wait ... ");
     var promise1 = metadata.getMetadata(config);
     var promise2 = promise1.then(function() {
-        app.listen(8090, () => console.log("Server started!"));
+        app.listen(8090, () => logger.info("Server started!"));
     });
 }
 

@@ -1,6 +1,12 @@
 const {OAuth2Client} = require('google-auth-library');
 const url = require('url');
+const log4js = require('log4js');
+
 const secretsInfo = require('./secrets');
+
+//set logger level
+const logger = log4js.getLogger();
+logger.level = 'all';
 
 var shared = {
     configFile: undefined,  //which config file are we using?
@@ -13,20 +19,17 @@ const useConfig = async function(config) {
 
     //get secretID from config file
     shared.secretID = config.auth.google.secretId;
-    //console.log("id is: " + shared.secretID);
     shared.configFile = config;
 
     secretsInfo.getSecret(shared.secretID)
         .then(function (data) {
             if ('SecretString' in data) {
-                //console.log(data.SecretString);
-                //console.log("data: " + JSON.stringify(data, null, 4));
+                //logger.debug("secret data: " + JSON.stringify(data, null, 4));
                 return data.SecretString;
 
             } else {
                 let buf = new ArrayBuffer(data.SecretBinary, 'base64');
                 // decode the secret
-                //console.log(buf.toString('ascii'));
                 return buf.toString('ascii');
             }
         })
@@ -59,6 +62,7 @@ const logInLink = async function (req, res, next) {
 
     //create a client object
     let oAuth2Client = await getAuthenticatedClient(shared.configFile, shared.pkeys);
+
     //generate authorization url
     let authorizeUrl = await oAuth2Client.generateAuthUrl({
         access_type: 'offline',
@@ -72,14 +76,12 @@ const oauth2callback = function (req, res, next) {
     const uri = `${req.protocol}://${req.headers.host}`;
     const qs = new url.URL(req.url, uri).searchParams;
     let code = qs.get('code');
-    //console.log(`Code is ${code}`);
-    //console.log("hostname " + uri);
+
     if (!code) {
         next(new Error('No code provided'));
     } else {
         getInfo(code)
             .then(function (data) {
-                //console.log("data: " + JSON.stringify(data, null, 4));
                 res.cookie('email', data.email);
                 res.cookie('name', data.name);
                 res.redirect('/'); //redirect home
@@ -105,13 +107,9 @@ const getInfo = async function (code) {
     const url = 'https://people.googleapis.com/v1/people/me?personFields=names';
     const res = await oAuth2Client.request({url});
 
-   //console.log(res.data);
    let user = {};
    user.email = tokenInfo.email;
-   //console.log("data: " + JSON.stringify(res.data, null, 4));
    user.name = res.data.names[0].displayName; //name is inside an array object
-
-   //console.log("user: " + user.name);
 
    return user;
 };
