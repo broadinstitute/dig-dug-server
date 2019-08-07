@@ -7,7 +7,7 @@ const server = require('./server'); //load server file
 
 //set logger level
 const logger = log4js.getLogger();
-logger.level = 'all';
+//logger.level = 'all';
 
 const options = buildOptions({	//config arguments for commandline
 	config: {
