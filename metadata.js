@@ -27,7 +27,7 @@ function getMetadata(config)
 			//setting the metadata
 			cache.metadata = response.data;
 		})
-		.then(function (){
+		.then(function (response){
 			//caching datasets and phenotypes
 			cache.datasets = getDatasets();
 			cache.phenotypes = getPhenotypes();

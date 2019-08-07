@@ -68,7 +68,7 @@ const logInLink = async function (req, res, next) {
         access_type: 'offline',
         scope: 'profile email openid',
     });
-    console.log("login link : " + authorizeUrl);
+    logger.info("login link : " + authorizeUrl);
     res.redirect(authorizeUrl);
 };
 
