@@ -1,6 +1,11 @@
 const request = require('request');
 const axios = require('axios');
 const util = require('util');
+const log4js = require('log4js');
+
+//set logger level
+const logger = log4js.getLogger();
+logger.level = 'all';
 
 var cache = {
 	metadata: undefined,
@@ -28,7 +33,7 @@ function getMetadata(config)
 			cache.phenotypes = getPhenotypes();
 		})
 		.catch(function(error){
-			console.log(error)
+			logger.error(error)
 		})
 }
 

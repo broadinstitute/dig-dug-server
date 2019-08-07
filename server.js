@@ -13,9 +13,21 @@ const log4js = require('log4js');
 const metadata = require('./metadata');
 const google = require('./google');
 
-//set logger level
+//configure logger
+log4js.configure({
+    appenders: {
+      out: {
+        type: 'stdout',
+        layout: {
+          type: 'pattern', pattern: '%[[%p] %f{1}:%l >>%] %m'
+        }
+      }
+    },
+    categories: {
+      default: { appenders: ['out'], level: 'all', enableCallStack: true }
+    }
+});
 const logger = log4js.getLogger();
-logger.level = 'all';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
