@@ -1,11 +1,11 @@
-const request = require('request');
-const axios = require('axios');
-const util = require('util');
-const log4js = require('log4js');
+const request = require("request");
+const axios = require("axios");
+const util = require("util");
+const log4js = require("log4js");
 
 //set logger level
 const logger = log4js.getLogger();
-logger.level = 'all';
+logger.level = "all";
 
 var cache = {
 	metadata: undefined,
@@ -13,8 +13,7 @@ var cache = {
 	datasets: []
 };
 
-function getMetadata(config)
-{
+function getMetadata(config) {
 	let host = config.kb.host;
 	let port = config.kb.port;
 	let expose = config.kb.expose;
@@ -22,19 +21,20 @@ function getMetadata(config)
 	let baseurl = "http://" + host + ":" + port;
 	//build a baseurl
 	var kbPath = baseurl + "/dccservices/getMetadata?mdv=" + mdv;
-	return axios.get(kbPath) //returns a promise
-		.then(function (response){
+	return axios
+		.get(kbPath) //returns a promise
+		.then(function(response) {
 			//setting the metadata
 			cache.metadata = response.data;
 		})
-		.then(function (response){
+		.then(function(response) {
 			//caching datasets and phenotypes
 			cache.datasets = getDatasets();
 			cache.phenotypes = getPhenotypes();
 		})
-		.catch(function(error){
-			logger.error(error)
-		})
+		.catch(function(error) {
+			logger.error(error);
+		});
 }
 //optional parameter - phenotype
 //given a phenotype return a list of dataset.
@@ -106,33 +106,46 @@ function getDatasets(phenotype){
 
 }
 
-function getPhenotypes(){
+function getData(dataset, phenotype) {
+	if (dataset === undefined || phenotype === undefined)
+		return "400: Bad Request. Either dataset or phenotype is undefined.";
+	else {
+		return "Incomplete.";
+	}
+}
+
+function getPhenotypes() {
 	var phenotypeMap = {};
 	//traverse the cachedMetadata and get the phenotypes
-	for (item in cache.metadata){
-		for (subitem in cache.metadata [item]){
-			Object.keys(cache.metadata [item][subitem]).forEach(key => {
-				let sampleGroups = cache.metadata [item][subitem]['sample_groups'];
-				for (sampleGroup in sampleGroups){
+	for (item in cache.metadata) {
+		for (subitem in cache.metadata[item]) {
+			Object.keys(cache.metadata[item][subitem]).forEach(key => {
+				let sampleGroups =
+					cache.metadata[item][subitem]["sample_groups"];
+				for (sampleGroup in sampleGroups) {
 					Object.keys(sampleGroups[sampleGroup]).forEach(key => {
-						let phenotypeObj = sampleGroups[sampleGroup]['phenotypes'];
-						for(keyWord in phenotypeObj){
+						let phenotypeObj =
+							sampleGroups[sampleGroup]["phenotypes"];
+						for (keyWord in phenotypeObj) {
 							let keys = Object.keys(phenotypeObj[keyWord]);
-							let groupName = phenotypeObj[keyWord]['group']; //key
-							let phenotypeName = phenotypeObj[keyWord]['name']; // value in a list
+							let groupName = phenotypeObj[keyWord]["group"]; //key
+							let phenotypeName = phenotypeObj[keyWord]["name"]; // value in a list
 							//if key already exist in the map
 							if (!!phenotypeMap[groupName]) {
-								if (phenotypeMap[groupName].indexOf(phenotypeName) < 0) {
+								if (
+									phenotypeMap[groupName].indexOf(
+										phenotypeName
+									) < 0
+								) {
 									phenotypeMap[groupName].push(phenotypeName);
 								}
-							}
-							else {
+							} else {
 								phenotypeMap[groupName] = [phenotypeName];
 							}
 						}
-					})
+					});
 				}
-			})
+			});
 		}
 	}
 	return phenotypeMap;
