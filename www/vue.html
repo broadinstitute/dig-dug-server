@@ -14,7 +14,9 @@
 
       <select v-model="firstOption">
         <optgroup v-for="(item, index) in phenotypeMap" v-bind:label="index">
-          <option v-for="listvalue in phenotypeMap[index]" :value="listvalue">{{ listvalue }}</option>
+          <option v-for="listvalue in phenotypeMap[index]" :value="listvalue">{{
+            listvalue
+          }}</option>
         </optgroup>
         <!-- <option v-for="(key, listvalue) in phenotypelist"
           >{{ listvalue }} - {{ key }}</option
@@ -22,7 +24,7 @@
       </select>
 
       <select v-model="secondOption">
-        <option v-for="item in datasetlist">{{ item }}</option>
+        <option v-for="item in datasetlist" :value="item">{{ item }}</option>
       </select>
     </div>
   </body>
