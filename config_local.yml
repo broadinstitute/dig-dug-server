@@ -1,4 +1,8 @@
 portal: T2D
+auth:
+    google:
+        secretId: google-oauth-portal
+        callbackHost: localhost:8090
 content:
   shared: "https://raw.github.com/broadinstitute/dig-dug-shared"
   www: "file:///Users/psingh/broadProjects/dig-dug-static-resources/www"
