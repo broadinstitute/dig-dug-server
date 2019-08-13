@@ -13,19 +13,22 @@
       <p>{{ info2 }}</p>
 
       <select v-model="firstOption">
-        <optgroup v-for="(item, index) in phenotypeMap" v-bind:label="index">
+        <optgroup v-for="(item, index) in phenotypeMap" :label="index">
           <option v-for="listvalue in phenotypeMap[index]" :value="listvalue">{{
             listvalue
           }}</option>
         </optgroup>
-        <!-- <option v-for="(key, listvalue) in phenotypelist"
-          >{{ listvalue }} - {{ key }}</option
-        > -->
       </select>
 
-      <select v-model="secondOption">
+      <select
+        v-model="secondOption"
+        @change="getData(firstOption, secondOption)"
+        v-if="firstOption"
+      >
         <option v-for="item in datasetlist" :value="item">{{ item }}</option>
       </select>
+
+      <span>Selected: {{ secondOption }}</span>
     </div>
   </body>
   <script>
@@ -39,42 +42,12 @@
           secondOption: null,
           thirdOption: null,
           phenotypeMap: null,
-          datasetlist: null
+          datasetlist: null,
+          dataSelect: null
         };
       },
 
-      parseGetDataOutput(jsonObject){
-
-};
-
       mounted() {
-
-          var getDataPayload = {"passback": "abc123", "entity": "variant", "page_start":-1, "page_size": -1,
-                "limit": 500, "count": false, "result_format": "verbose",
-                "order_by": [
-                    {"dataset_id": "GWAS_DIAMANTE_eu_mdv37", "phenotype": "T2D", "operand": "P_VALUE", "operator": "1"}],
-                "properties": {
-                    "cproperty": [ "CHROM" , "CLOSEST_GENE" , "DBSNP_ID" , "POS" , "VAR_ID"],
-                    "dproperty" : {"MAF" : [ "GWAS_DIAMANTE_eu_mdv37"] } ,
-                    "pproperty" : {"ODDS_RATIO" : { "GWAS_DIAMANTE_eu_mdv37" : [ "T2D"]}, "P_VALUE" : { "GWAS_DIAMANTE_eu_mdv37" : [ "T2D"] } } },
-                "filters":  [
-                    {"dataset_id": "GWAS_DIAMANTE_eu_mdv37", "phenotype": "T2D",
-                    "operand": "P_VALUE", "operator": "LT", "value": 0.0005, "operand_type": "FLOAT"},
-                    {"dataset_id": "GWAS_DIAMANTE_eu_mdv37", "phenotype": "T2D",
-                    "operand": "P_VALUE", "operator": "GT", "value": 0.0, "operand_type": "FLOAT"} ] };
-
-                var data = new FormData();
-                data.append( "json", JSON.stringify( getDataPayload ) );
-
-                fetch("http://ec2-34-229-106-174.compute-1.amazonaws.com:8090/dccservices/getData",
-                {
-                    method: "POST",
-                    body: data
-                })
-                .then(function(res){ return res.json(); })
-                .then(function(data){ alert( JSON.stringify( data ) ) })
-                .then(function(res){return parseGetDataOutput(res)});
-
         fetch("/getPhenotypes")
           .then(response => response.json())
           .then(json => {
@@ -89,6 +62,76 @@
             this.datasetlist = json;
             console.log(json);
           });
+      },
+      methods: {
+        fillOption2(firstOption) {
+          let filter; //need key from 1st option to filter
+          this.datasetlist = filter;
+        },
+        getData(firstOption, secondOption) {
+          var getDataPayload = {
+            passback: "abc123",
+            entity: "variant",
+            page_start: -1,
+            page_size: -1,
+            limit: 500,
+            count: false,
+            result_format: "verbose",
+            order_by: [
+              {
+                dataset_id: "GWAS_DIAMANTE_eu_mdv37",
+                phenotype: "T2D",
+                operand: "P_VALUE",
+                operator: "1"
+              }
+            ],
+            properties: {
+              cproperty: ["CHROM", "CLOSEST_GENE", "DBSNP_ID", "POS", "VAR_ID"],
+              dproperty: { MAF: ["GWAS_DIAMANTE_eu_mdv37"] },
+              pproperty: {
+                ODDS_RATIO: { GWAS_DIAMANTE_eu_mdv37: ["T2D"] },
+                P_VALUE: { GWAS_DIAMANTE_eu_mdv37: ["T2D"] }
+              }
+            },
+            filters: [
+              {
+                dataset_id: "GWAS_DIAMANTE_eu_mdv37",
+                phenotype: "T2D",
+                operand: "P_VALUE",
+                operator: "LT",
+                value: 0.0005,
+                operand_type: "FLOAT"
+              },
+              {
+                dataset_id: "GWAS_DIAMANTE_eu_mdv37",
+                phenotype: "T2D",
+                operand: "P_VALUE",
+                operator: "GT",
+                value: 0.0,
+                operand_type: "FLOAT"
+              }
+            ]
+          };
+
+          var data = new FormData();
+          //data.append("json", JSON.stringify(getDataPayload));
+          data = JSON.stringify(getDataPayload);
+
+          fetch(
+            "http://ec2-34-229-106-174.compute-1.amazonaws.com:8090/dccservices/getData",
+            {
+              method: "POST",
+              body: data
+              //body: getDataPayload
+            }
+          )
+            .then(function(res) {
+              return res.json();
+            })
+            .then(function(data) {
+              console.log(JSON.stringify(data));
+            });
+        }
       }
     });
   </script>
