@@ -54,8 +54,8 @@ function getDatasets(phenotype){
 	//check if the phenotype/value of datasetPhenotypeMap is same as the key of the phenotypeDatasetListMap
 	//then append to the datasetArray
 
-	//phenotypeDatasetMap - where key is a phenotype string and value
-	var phenotypeDatasetMap = {};
+	//datasetPhenotypeListMap - where key is a phenotype string and value
+	var datasetPhenotypeListMap = {};
 	var phenotypeDatasetListMap = {};
 	//if phenotype is not defined (optional parameter)
 	if ( phenotype != undefined ){
@@ -70,32 +70,47 @@ function getDatasets(phenotype){
 							for(keyWord in phenotypeObj){
 								let keys = Object.keys(phenotypeObj[keyWord]);
 								//there can be multiple phenotypes under one datasets
-								//so the key of phenotypeDatasetMap is
-								let phenotypeName = phenotypeObj[keyWord]['name'];
-								phenotypeDatasetMap[datasetId] = phenotypeName;
+								//so the key of datasetPhenotypeListMap is
+								for(phen in phenotypeObj[keyWord]){
+									if (!!datasetPhenotypeListMap[datasetId]) {
+										if (
+											datasetPhenotypeListMap[datasetId].indexOf(
+												phenotypeObj[keyWord]['name']
+											) < 0
+										) {
+											datasetPhenotypeListMap[datasetId].push(phenotypeObj[keyWord]['name']);
+										}
+									} else {
+										datasetPhenotypeListMap[datasetId] = [phenotypeObj[keyWord]['name']];
+									}
+								}
 							}
 						});
 					}
 				})
 			}
 		}
-		//console.log(phenotypeDatasetMap);
-		let datasetKeys = Object.keys(phenotypeDatasetMap);
-		console.log(datasetKeys);
+		//console.log(datasetPhenotypeListMap);
+		let datasetKeys = Object.keys(datasetPhenotypeListMap);
+		//console.log(datasetKeys);
 		let datasetList = [];
 		//we need a list of datasets for a given phenotype
 		//key - phenotype and value is list of dataset which has same phenotype
 		for(let key in datasetKeys){
 			let dataset = datasetKeys[key];
-			let phen = phenotypeDatasetMap[dataset];
-			console.log(dataset + " , " + phen );
-			if (!!phenotypeDatasetListMap[phen]) {
-				if (phenotypeDatasetListMap[phen].indexOf(dataset) < 0) {
-					phenotypeDatasetListMap[phen].push(dataset);
+			for(let eachPhen in  datasetPhenotypeListMap[dataset]){
+				let phen = datasetPhenotypeListMap[dataset][eachPhen];
+				//console.log(dataset + " , " + phen );
+				if (!!phenotypeDatasetListMap[phen]) {
+					if (phenotypeDatasetListMap[phen].indexOf(dataset) < 0) {
+						phenotypeDatasetListMap[phen].push(dataset);
+					}
+				} else {
+					phenotypeDatasetListMap[phen] = [dataset];
 				}
-			} else {
-				phenotypeDatasetListMap[phen] = [dataset];
 			}
+
+
 		}
 		//console.log(phenotypeDatasetListMap);
 		//return the value of phenotype which is asked in the parameter
