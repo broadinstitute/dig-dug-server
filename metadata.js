@@ -10,13 +10,14 @@ logger.level = "all";
 var cache = {
 	metadata: undefined,
 	phenotypes: [],
-	datasets: []
+	datasets: [],
+	config: ""
 };
 
 function getMetadata(config) {
+	cache.config = config; //set config global so other functions know what file we're using
 	let host = config.kb.host;
 	let port = config.kb.port;
-	let expose = config.kb.expose;
 	let mdv = config.kb.mdv;
 	let baseurl = "http://" + host + ":" + port;
 	//build a baseurl
@@ -37,16 +38,14 @@ function getMetadata(config) {
 		});
 }
 
-
 function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
+	return Object.keys(object).find(key => object[key] === value);
 }
 
 //optional parameter - phenotype
 //given a phenotype return a list of dataset.
 
-function getDatasets(phenotype){
-
+function getDatasets(phenotype) {
 	var datasetArray = [];
 	//then you iterate over this map
 	//create a new map - phenotypeDatasetListMap {“phenotype”: [“list of datasets with same phenotype”]}
@@ -57,26 +56,29 @@ function getDatasets(phenotype){
 	//phenotypeDatasetMap - where key is a phenotype string and value
 	var phenotypeDatasetMap = {};
 	var phenotypeDatasetListMap = {};
-	//if phenotype is not defined (optional parameter)
-	if ( phenotype != undefined ){
-		for (item in cache.metadata ){
-			for (subitem in cache.metadata [item]){
-				Object.keys(cache.metadata [item][subitem]).forEach(key => {
-					var sampleGroups = cache.metadata [item][subitem]['sample_groups'];
-					for (sampleGroup in sampleGroups){
+	//if phenotype IS defined (optional parameter)
+	if (phenotype != undefined) {
+		for (let item in cache.metadata) {
+			for (let subitem in cache.metadata[item]) {
+				Object.keys(cache.metadata[item][subitem]).forEach(key => {
+					var sampleGroups =
+						cache.metadata[item][subitem]["sample_groups"];
+					for (let sampleGroup in sampleGroups) {
 						Object.keys(sampleGroups[sampleGroup]).forEach(key => {
-							let datasetId = sampleGroups[sampleGroup]['id'];
-							let phenotypeObj = sampleGroups[sampleGroup]['phenotypes'];
-							for(keyWord in phenotypeObj){
+							let datasetId = sampleGroups[sampleGroup]["id"];
+							let phenotypeObj =
+								sampleGroups[sampleGroup]["phenotypes"];
+							for (let keyWord in phenotypeObj) {
 								let keys = Object.keys(phenotypeObj[keyWord]);
 								//there can be multiple phenotypes under one datasets
 								//so the key of phenotypeDatasetMap is
-								let phenotypeName = phenotypeObj[keyWord]['name'];
+								let phenotypeName =
+									phenotypeObj[keyWord]["name"];
 								phenotypeDatasetMap[datasetId] = phenotypeName;
 							}
 						});
 					}
-				})
+				});
 			}
 		}
 		//console.log(phenotypeDatasetMap);
@@ -85,10 +87,10 @@ function getDatasets(phenotype){
 		let datasetList = [];
 		//we need a list of datasets for a given phenotype
 		//key - phenotype and value is list of dataset which has same phenotype
-		for(let key in datasetKeys){
+		for (let key in datasetKeys) {
 			let dataset = datasetKeys[key];
 			let phen = phenotypeDatasetMap[dataset];
-			console.log(dataset + " , " + phen );
+			console.log(dataset + " , " + phen);
 			if (!!phenotypeDatasetListMap[phen]) {
 				if (phenotypeDatasetListMap[phen].indexOf(dataset) < 0) {
 					phenotypeDatasetListMap[phen].push(dataset);
@@ -103,47 +105,67 @@ function getDatasets(phenotype){
 		return phenotypeDatasetListMap[phenotype];
 	}
 	//given a phenotype
-	else{
-		for (item in cache.metadata ){
-			for (subitem in cache.metadata [item]){
-				Object.keys(cache.metadata [item][subitem]).forEach(key => {
-					var sampleGroups = cache.metadata [item][subitem]['sample_groups'];
-					for (sampleGroup in sampleGroups){
+	else {
+		for (let item in cache.metadata) {
+			for (let subitem in cache.metadata[item]) {
+				Object.keys(cache.metadata[item][subitem]).forEach(key => {
+					var sampleGroups =
+						cache.metadata[item][subitem]["sample_groups"];
+					for (let sampleGroup in sampleGroups) {
 						Object.keys(sampleGroups[sampleGroup]).forEach(key => {
-							if (datasetArray.indexOf(sampleGroups[sampleGroup]['id']) < 0){
-								datasetArray.push(sampleGroups[sampleGroup]['id']);
+							if (
+								datasetArray.indexOf(
+									sampleGroups[sampleGroup]["id"]
+								) < 0
+							) {
+								datasetArray.push(
+									sampleGroups[sampleGroup]["id"]
+								);
 							}
 						});
 					}
-				})
+				});
 			}
 		}
 		return datasetArray;
 	}
-
 }
 
 function getData(dataset, phenotype) {
+	let config = cache.config;
+	let host = config.kb.host;
+	let port = config.kb.port;
+	let baseurl = "http://" + host + ":" + port;
+	var kbPath = `${baseurl}/dccservices/getData/${dataset}/${phenotype}`;
+
+	//Call axios to fetch
 	if (dataset === undefined || phenotype === undefined)
 		return "400: Bad Request. Either dataset or phenotype is undefined.";
 	else {
-		return "Incomplete.";
+		return axios
+			.get(kbPath) //returns a promise
+			.then(function(response) {
+				return response.data;
+			})
+			.catch(function(error) {
+				logger.error(error);
+			});
 	}
 }
 
 function getPhenotypes() {
 	var phenotypeMap = {};
 	//traverse the cachedMetadata and get the phenotypes
-	for (item in cache.metadata) {
-		for (subitem in cache.metadata[item]) {
+	for (let item in cache.metadata) {
+		for (let subitem in cache.metadata[item]) {
 			Object.keys(cache.metadata[item][subitem]).forEach(key => {
 				let sampleGroups =
 					cache.metadata[item][subitem]["sample_groups"];
-				for (sampleGroup in sampleGroups) {
+				for (let sampleGroup in sampleGroups) {
 					Object.keys(sampleGroups[sampleGroup]).forEach(key => {
 						let phenotypeObj =
 							sampleGroups[sampleGroup]["phenotypes"];
-						for (keyWord in phenotypeObj) {
+						for (let keyWord in phenotypeObj) {
 							let keys = Object.keys(phenotypeObj[keyWord]);
 							let groupName = phenotypeObj[keyWord]["group"]; //key
 							let phenotypeName = phenotypeObj[keyWord]["name"]; // value in a list
@@ -172,5 +194,6 @@ module.exports = {
 	getMetadata: getMetadata,
 	getPhenotypes: getPhenotypes,
 	getDatasets: getDatasets,
-	getData: getData
+	getData: getData,
+	cache
 };
