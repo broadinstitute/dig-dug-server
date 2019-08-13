@@ -36,10 +36,17 @@ function getMetadata(config) {
 			logger.error(error);
 		});
 }
+
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
 //optional parameter - phenotype
 //given a phenotype return a list of dataset.
 
 function getDatasets(phenotype){
+
 	var datasetArray = [];
 	//then you iterate over this map
 	//create a new map - phenotypeDatasetListMap {“phenotype”: [“list of datasets with same phenotype”]}
@@ -47,7 +54,7 @@ function getDatasets(phenotype){
 	//check if the phenotype/value of datasetPhenotypeMap is same as the key of the phenotypeDatasetListMap
 	//then append to the datasetArray
 
-	//phenotypeDatasetMap - where key is
+	//phenotypeDatasetMap - where key is a phenotype string and value
 	var phenotypeDatasetMap = {};
 	var phenotypeDatasetListMap = {};
 	//if phenotype is not defined (optional parameter)
@@ -62,26 +69,37 @@ function getDatasets(phenotype){
 							let phenotypeObj = sampleGroups[sampleGroup]['phenotypes'];
 							for(keyWord in phenotypeObj){
 								let keys = Object.keys(phenotypeObj[keyWord]);
+								//there can be multiple phenotypes under one datasets
+								//so the key of phenotypeDatasetMap is
 								let phenotypeName = phenotypeObj[keyWord]['name'];
-
-								if (!!phenotypeDatasetListMap[phenotypeName]) {
-									if (phenotypeDatasetListMap[phenotypeName].indexOf(datasetId) < 0) {
-										phenotypeDatasetListMap[phenotypeName].push(datasetId);
-									}
-								}
-								else {
-									phenotypeDatasetListMap[phenotypeName] = [datasetId];
-								}
+								phenotypeDatasetMap[datasetId] = phenotypeName;
 							}
-
-
-
 						});
 					}
 				})
 			}
 		}
+		//console.log(phenotypeDatasetMap);
+		let datasetKeys = Object.keys(phenotypeDatasetMap);
+		console.log(datasetKeys);
+		let datasetList = [];
+		//we need a list of datasets for a given phenotype
+		//key - phenotype and value is list of dataset which has same phenotype
+		for(let key in datasetKeys){
+			let dataset = datasetKeys[key];
+			let phen = phenotypeDatasetMap[dataset];
+			console.log(dataset + " , " + phen );
+			if (!!phenotypeDatasetListMap[phen]) {
+				if (phenotypeDatasetListMap[phen].indexOf(dataset) < 0) {
+					phenotypeDatasetListMap[phen].push(dataset);
+				}
+			} else {
+				phenotypeDatasetListMap[phen] = [dataset];
+			}
+		}
+		//console.log(phenotypeDatasetListMap);
 		//return the value of phenotype which is asked in the parameter
+		console.log(phenotypeDatasetListMap);
 		return phenotypeDatasetListMap[phenotype];
 	}
 	//given a phenotype
@@ -92,7 +110,6 @@ function getDatasets(phenotype){
 					var sampleGroups = cache.metadata [item][subitem]['sample_groups'];
 					for (sampleGroup in sampleGroups){
 						Object.keys(sampleGroups[sampleGroup]).forEach(key => {
-
 							if (datasetArray.indexOf(sampleGroups[sampleGroup]['id']) < 0){
 								datasetArray.push(sampleGroups[sampleGroup]['id']);
 							}
@@ -154,5 +171,6 @@ function getPhenotypes() {
 module.exports = {
 	getMetadata: getMetadata,
 	getPhenotypes: getPhenotypes,
-	getDatasets: getDatasets
+	getDatasets: getDatasets,
+	getData: getData
 };

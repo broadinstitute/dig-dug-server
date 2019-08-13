@@ -59,7 +59,7 @@ app.get("/getDatasets/:phenotype", (req, res) => {
 });
 
 //get data for given dataset
-app.post("/getData/:dataset/:phenotype", (req, res) => {
+app.use("/getData/:dataset/:phenotype", (req, res) => {
 	let variants = metadata.getData(req.params.dataset, req.params.phenotype);
 	res.json(variants);
 });
