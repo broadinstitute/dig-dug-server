@@ -13,19 +13,22 @@
       <p>{{ info2 }}</p>
 
       <select v-model="firstOption">
-        <optgroup v-for="(item, index) in phenotypeMap" v-bind:label="index">
+        <optgroup v-for="(item, index) in phenotypeMap" :label="index">
           <option v-for="listvalue in phenotypeMap[index]" :value="listvalue">{{
             listvalue
           }}</option>
         </optgroup>
-        <!-- <option v-for="(key, listvalue) in phenotypelist"
-          >{{ listvalue }} - {{ key }}</option
-        > -->
       </select>
 
-      <select v-model="secondOption">
+      <select
+        v-model="secondOption"
+        @change="getData(firstOption, secondOption)"
+        v-if="firstOption"
+      >
         <option v-for="item in datasetlist" :value="item">{{ item }}</option>
       </select>
+
+      <span>Selected: {{ secondOption }}</span>
     </div>
   </body>
   <script>
@@ -39,7 +42,8 @@
           secondOption: null,
           thirdOption: null,
           phenotypeMap: null,
-          datasetlist: null
+          datasetlist: null,
+          dataSelect: null
         };
       },
       mounted() {
@@ -57,6 +61,18 @@
             this.datasetlist = json;
             console.log(json);
           });
+      },
+      methods: {
+        getData(firstOption, secondOption) {
+          let url = `/getData/${firstOption}/${secondOption}`;
+          fetch(url)
+            .then(response => response.json())
+            .then(json => {
+              this.info = json;
+              this.dataSelect = json;
+              console.log(json);
+            });
+        }
       }
     });
   </script>
