@@ -63,6 +63,10 @@
           });
       },
       methods: {
+        fillOption2(firstOption) {
+          let filter; //need key from 1st option to filter
+          this.datasetlist = filter;
+        },
         getData(firstOption, secondOption) {
           let url = `/getData/${firstOption}/${secondOption}`;
           fetch(url)
