@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"
+    />
     <title>Vue Test</title>
   </head>
   <body>
@@ -12,7 +18,7 @@
       <p>{{ info }}</p>
       <p>{{ info2 }}</p>
 
-      <select v-model="firstOption">
+      <select v-model="firstOption" @change="getDatasets(firstOption)">
         <optgroup v-for="(item, index) in phenotypeMap" :label="index">
           <option v-for="listvalue in phenotypeMap[index]" :value="listvalue">{{
             listvalue
@@ -28,8 +34,10 @@
         <option v-for="item in datasetlist" :value="item">{{ item }}</option>
       </select>
 
-      <span>Selected: {{ secondOption }}</span>
+      <span>Data: {{ newdata }}</span>
     </div>
+
+    <div id="myTable">Table goes here</div>
   </body>
   <script>
     new Vue({
@@ -38,6 +46,7 @@
         return {
           info: null,
           info2: null,
+          newdata: null,
           firstOption: null,
           secondOption: null,
           thirdOption: null,
@@ -55,18 +64,27 @@
             this.phenotypeMap = json;
             console.log(json);
           });
-        fetch("/getDatasets")
-          .then(response => response.json())
-          .then(json => {
-            this.info2 = json;
-            this.datasetlist = json;
-            console.log(json);
-          });
+        // fetch("/getDatasets")
+        //   .then(response => response.json())
+        //   .then(json => {
+        //     this.info2 = json;
+        //     this.datasetlist = json;
+        //     console.log(json);
+        //   });
       },
       methods: {
         fillOption2(firstOption) {
           let filter; //need key from 1st option to filter
           this.datasetlist = filter;
+        },
+        getDatasets(phenotype) {
+          fetch(`/getDatasets/${phenotype}`)
+            .then(response => response.json())
+            .then(json => {
+              this.info2 = json;
+              this.datasetlist = json;
+              console.log(json);
+            });
         },
         getData(firstOption, secondOption) {
           var getDataPayload = {
@@ -129,10 +147,15 @@
               return res.json();
             })
             .then(function(data) {
+              newdata = data;
               console.log(JSON.stringify(data));
             });
         }
       }
+    });
+
+    $(document).ready(function() {
+      $("#myTable").DataTable();
     });
   </script>
 </html>
