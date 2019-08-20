@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <script src="https://unpkg.com/jquery"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
     <link
       rel="stylesheet"
       type="text/css"
@@ -14,148 +22,95 @@
     <title>Vue Test</title>
   </head>
   <body>
-    <div id="app">
-      <p>{{ info }}</p>
-      <p>{{ info2 }}</p>
+    <div id="components">
+      <phenotype-select inline-template>
+        <select v-model="selectedPhenotype" @change="updateStore()">
+          <optgroup v-for="(item, index) in phenotypeMap" :label="index">
+            <option
+              v-for="listvalue in phenotypeMap[index]"
+              :value="listvalue"
+              >{{ listvalue }}</option
+            >
+          </optgroup>
+        </select>
+      </phenotype-select>
 
-      <select v-model="firstOption" @change="getDatasets(firstOption)">
-        <optgroup v-for="(item, index) in phenotypeMap" :label="index">
-          <option v-for="listvalue in phenotypeMap[index]" :value="listvalue">{{
-            listvalue
-          }}</option>
-        </optgroup>
-      </select>
-
-      <select
-        v-model="secondOption"
-        @change="getData(firstOption, secondOption)"
-        v-if="firstOption"
-      >
-        <option v-for="item in datasetlist" :value="item">{{ item }}</option>
-      </select>
-
-      <span>Data: {{ newdata }}</span>
+      <dataset-select inline-template>
+        <select v-model="selectedDataset" @change="updateStore()">
+          <option v-for="item in datasetList" :value="item">{{ item }}</option>
+        </select>
+      </dataset-select>
     </div>
 
-    <div id="myTable">Table goes here</div>
+    <table id="table"></table>
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <th>rsid</th>
+        <th>p-value</th>
+      </thead>
+      <tbody>
+        <tr v-for="(row, index) in vTable">
+          <td>{{ row.DBSNP_ID }}</td>
+          <td>{{ row.p_value }}</td>
+        </tr>
+      </tbody>
+    </table>
   </body>
+  <script src="./phenotypeSelect.js"></script>
+  <script src="./datasetSelect.js"></script>
   <script>
+    // $(document).ready(function() {
+    //   $("#table").dataTable();
+    // });
     new Vue({
-      el: "#app",
-      data() {
-        return {
-          info: null,
-          info2: null,
-          newdata: null,
-          firstOption: null,
-          secondOption: null,
-          thirdOption: null,
-          phenotypeMap: null,
-          datasetlist: null,
-          dataSelect: null
-        };
-      },
-
-      mounted() {
-        fetch("/getPhenotypes")
-          .then(response => response.json())
-          .then(json => {
-            this.info = json;
-            this.phenotypeMap = json;
-            console.log(json);
-          });
-        // fetch("/getDatasets")
-        //   .then(response => response.json())
-        //   .then(json => {
-        //     this.info2 = json;
-        //     this.datasetlist = json;
-        //     console.log(json);
-        //   });
-      },
-      methods: {
-        fillOption2(firstOption) {
-          let filter; //need key from 1st option to filter
-          this.datasetlist = filter;
+      el: "#components",
+      store: new Vuex.Store({
+        state: {},
+        mutations: {
+          updateSelectedPhenotype(state, phenotype) {
+            state.selectedPhenotype = phenotype;
+          },
+          updateDatasetList(state, datasets) {
+            console.log("i'm here");
+            state.datasetList = datasets;
+          }
         },
-        getDatasets(phenotype) {
-          fetch(`/getDatasets/${phenotype}`)
-            .then(response => response.json())
-            .then(json => {
-              this.info2 = json;
-              this.datasetlist = json;
-              console.log(json);
-            });
-        },
-        getData(firstOption, secondOption) {
-          var getDataPayload = {
-            passback: "abc123",
-            entity: "variant",
-            page_start: -1,
-            page_size: -1,
-            limit: 500,
-            count: false,
-            result_format: "verbose",
-            order_by: [
-              {
-                dataset_id: "GWAS_DIAMANTE_eu_mdv37",
-                phenotype: "T2D",
-                operand: "P_VALUE",
-                operator: "1"
-              }
-            ],
-            properties: {
-              cproperty: ["CHROM", "CLOSEST_GENE", "DBSNP_ID", "POS", "VAR_ID"],
-              dproperty: { MAF: ["GWAS_DIAMANTE_eu_mdv37"] },
-              pproperty: {
-                ODDS_RATIO: { GWAS_DIAMANTE_eu_mdv37: ["T2D"] },
-                P_VALUE: { GWAS_DIAMANTE_eu_mdv37: ["T2D"] }
-              }
-            },
-            filters: [
-              {
-                dataset_id: "GWAS_DIAMANTE_eu_mdv37",
-                phenotype: "T2D",
-                operand: "P_VALUE",
-                operator: "LT",
-                value: 0.0005,
-                operand_type: "FLOAT"
-              },
-              {
-                dataset_id: "GWAS_DIAMANTE_eu_mdv37",
-                phenotype: "T2D",
-                operand: "P_VALUE",
-                operator: "GT",
-                value: 0.0,
-                operand_type: "FLOAT"
-              }
-            ]
-          };
-
-          var data = new FormData();
-          //data.append("json", JSON.stringify(getDataPayload));
-          data = JSON.stringify(getDataPayload);
-
-          fetch(
-            "http://ec2-34-229-106-174.compute-1.amazonaws.com:8090/dccservices/getData",
-            {
-              method: "POST",
-              body: data
-              //body: getDataPayload
-            }
-          )
-            .then(function(res) {
-              return res.json();
-            })
-            .then(function(data) {
-              newdata = data;
-              console.log(JSON.stringify(data));
-            });
+        actions: {
+          getDatasets(context) {
+            let phenotype = this.state.selectedPhenotype;
+            return fetch(`/getDatasets/${phenotype}`)
+              .then(response => response.json())
+              .then(json => context.commit("updateDatasetList", json));
+          }
         }
-      }
-    });
-
-    $(document).ready(function() {
-      $("#myTable").DataTable();
+        // mutations: {
+        //   selectedPhenotype(state, payload) {
+        //     state.firstOption = payload;
+        //   },
+        //   setSecondOption(state, payload) {
+        //     state.secondOption = payload;
+        //   },
+        //   setDatasetList(state, payload) {
+        //     state.datasetlist = payload;
+        //   }
+        // },
+        // getters: {
+        //   firstOption: state => state.firstOption,
+        //   secondOption: state => state.secondOption,
+        //   datasetList: state => state.datasetlist
+        // },
+        // actions: {
+        //   setFirstOption(context, payload) {
+        //     context.commit("setFirstOption", payload);
+        //   },
+        //   setSecondOption(context, payload) {
+        //     context.commit("setSecondOption", payload);
+        //   },
+        //   setDatasetList(context, payload) {
+        //     context.commit("setDatasetList", payload);
+        //   }
+        // }
+      })
     });
   </script>
 </html>

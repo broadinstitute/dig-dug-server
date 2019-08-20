@@ -91,7 +91,11 @@ function route_kb_api_requests(config) {
 		//build the api link
 		let apiPath = baseurl + data.urlpath;
 		if (data.method == "POST") {
-			app.post(`/${name}`, (req, res) => {});
+			app.post(`/${name}`, (req, res) => {
+				req.pipe(
+					request({ qs: req.query, uri: apiPath, json: true })
+				).pipe(res);
+			});
 		} else if (data.method == "GET") {
 			app.get(`/${name}*`, (req, res) => {
 				console.log("query", req.query);
