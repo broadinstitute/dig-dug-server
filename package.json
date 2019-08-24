@@ -25,6 +25,7 @@
     "google-auth-library": "^4.2.5",
     "js-yaml": "^3.13.1",
     "log4js": "^4.5.1",
+    "mime": "^2.4.4",
     "minimist": "^1.2.0",
     "minimist-options": "^4.0.1",
     "nodemon": "^1.19.1",

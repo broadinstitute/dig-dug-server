@@ -1,7 +1,9 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const mime = require("mime");
 const url = require("url");
+const https = require("https");
 const app = express();
 const util = require("util");
 const yaml = require("js-yaml");
@@ -112,6 +114,14 @@ function route_github_static_content(config, www) {
 	const resourcePath = www ? www : config.content.www; //set www to override if passed in
 	const checkPath = new URL(resourcePath);
 
+	const charsetOverrides = {
+		"application/javascript": "; charset=utf-8",
+		"text/css": "; charset=utf-8",
+		"text/html": "; charset=utf-8",
+		"text/plain": "; charset=utf-8",
+		"application/json": "; charset=utf-8"
+	};
+
 	//static resources are served local instead of github
 	if (checkPath.protocol == "file:") {
 		//serve static files from location in the config
@@ -120,22 +130,46 @@ function route_github_static_content(config, www) {
 		//serve static files from location relative to where server is run, i.e. public folder
 		//app.use('/www', express.static(path.join(__dirname, 'www')) );
 	} else {
-		app.get("/www/:filePath*", function(req, res) {
-			let filePath = resourcePath + "/" + req.params.filePath;
-			//console.log("file: " + filePath);
+		app.get("/www/*", function(req, res) {
+			let content = req.originalUrl.substring(4); //remove mount subdirectory from file path, i.e. /www in this case
+			let filePath = resourcePath + content;
+			logger.info("getting file: " + filePath);
+			req.pipe(
+				https.request(filePath, function(newRes) {
+					let mimeType = mime.getType(filePath);
+					res.setHeader(
+						"Content-Type",
+						mimeType + (charsetOverrides[mimeType] || "")
+					);
+					res.setHeader("Cache-Control", "public, max-age=2592000");
+					res.setHeader(
+						"Expires",
+						new Date(Date.now() + 2592000000).toUTCString()
+					);
+
+					newRes.pipe(res);
+				})
+			).on("error", function(err) {
+				res.statusCode = 500;
+				res.end();
+				logger.error(
+					new Error("Status 500: couldn't pipe file to client")
+				);
+			});
 
 			//check for error if file doesn't exist
-			urlExists(filePath, function(err, exists) {
-				if (exists) {
-					req.pipe(request(filePath)).pipe(res);
-				} else {
-					res.status(404).send({ error: "404: file not found" });
-				}
-			});
+			// urlExists(filePath, function(err, exists) {
+			// 	if (exists) {
+			// 		req.pipe(request(filePath)).pipe(res);
+			// 	} else {
+			// 		res.status(404).send({ error: "404: file not found" });
+			// 	}
+			// });
 		});
 	}
 }
 
+//start function
 function start(config) {
 	route_github_static_content(config);
 	route_kb_api_requests(config);
