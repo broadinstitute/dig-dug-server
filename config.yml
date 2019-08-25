@@ -18,6 +18,6 @@ kb:
         getMetadata:
             method: GET
             urlpath: "/dccservices/getMetadata"
-        testme:
-            method: GET
-            urlpath: "/testME"
+        getData:
+            method: POST
+            urlpath: "/dccservices/getData"

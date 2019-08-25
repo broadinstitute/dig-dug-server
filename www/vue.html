@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <script src="https://unpkg.com/jquery"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"
+    />
+    <title>Vue Test</title>
+  </head>
+  <body>
+    <div id="components">
+      <phenotype-select inline-template>
+        <select v-model="selectedPhenotype" @change="updateStore()">
+          <optgroup v-for="(item, index) in phenotypeMap" :label="index">
+            <option
+              v-for="listvalue in phenotypeMap[index]"
+              :value="listvalue"
+              >{{ listvalue }}</option
+            >
+          </optgroup>
+        </select>
+      </phenotype-select>
+
+      <dataset-select inline-template>
+        <select v-model="selectedDataset" @change="updateStore()">
+          <option v-for="item in datasetList" :value="item">{{ item }}</option>
+        </select>
+      </dataset-select>
+    </div>
+
+    <table id="table"></table>
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <th>rsid</th>
+        <th>p-value</th>
+      </thead>
+      <tbody>
+        <tr v-for="(row, index) in vTable">
+          <td>{{ row.DBSNP_ID }}</td>
+          <td>{{ row.p_value }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+  <script src="./phenotypeSelect.js"></script>
+  <script src="./datasetSelect.js"></script>
+  <script>
+    // $(document).ready(function() {
+    //   $("#table").dataTable();
+    // });
+    new Vue({
+      el: "#components",
+      store: new Vuex.Store({
+        state: {},
+        mutations: {
+          updateSelectedPhenotype(state, phenotype) {
+            state.selectedPhenotype = phenotype;
+          },
+          updateDatasetList(state, datasets) {
+            console.log("i'm here");
+            state.datasetList = datasets;
+          }
+        },
+        actions: {
+          getDatasets(context) {
+            let phenotype = this.state.selectedPhenotype;
+            return fetch(`/getDatasets/${phenotype}`)
+              .then(response => response.json())
+              .then(json => context.commit("updateDatasetList", json));
+          }
+        }
+        // mutations: {
+        //   selectedPhenotype(state, payload) {
+        //     state.firstOption = payload;
+        //   },
+        //   setSecondOption(state, payload) {
+        //     state.secondOption = payload;
+        //   },
+        //   setDatasetList(state, payload) {
+        //     state.datasetlist = payload;
+        //   }
+        // },
+        // getters: {
+        //   firstOption: state => state.firstOption,
+        //   secondOption: state => state.secondOption,
+        //   datasetList: state => state.datasetlist
+        // },
+        // actions: {
+        //   setFirstOption(context, payload) {
+        //     context.commit("setFirstOption", payload);
+        //   },
+        //   setSecondOption(context, payload) {
+        //     context.commit("setSecondOption", payload);
+        //   },
+        //   setDatasetList(context, payload) {
+        //     context.commit("setDatasetList", payload);
+        //   }
+        // }
+      })
+    });
+  </script>
+</html>

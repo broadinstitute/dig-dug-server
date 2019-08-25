@@ -1,3 +1,4 @@
+//removed the const
 const aws = require('aws-sdk');
 const secret = 'google-oauth-portal';
 const region = 'us-east-1';
