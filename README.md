@@ -1,4 +1,8 @@
+
 # Welcome to DIG Portal v.2.0.0.alpha!
+
+This is a simplified back-end-only server for driving the new knowledge portals. It works in conjunction with the [front-end resources](https://github.com/broadinstitute/dig-dug-static-resources). The separation of services allow each part to function independently, and allow for greater flexibility. I.e. designers can concentrate on the front-end works without needing to know the back-end codes.
+<hr> 
 
 This readme file will be updated as needed. The following are currently available features.
 
@@ -64,4 +68,3 @@ $ node app
 ```
 $ node app --config custom_config.yml
 ```   
-
