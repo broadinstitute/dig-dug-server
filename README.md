@@ -46,3 +46,22 @@ This new portal is currently using [AWS Secrets Manager](https://aws.amazon.com/
 In order to enable login into the portal with a Google account, it is first required to setup a project, acquire the necessary keys and secrets from [Google developer console](https://developers.google.com/identity/sign-in/web/sign-in). Such information is recommended to be saved to AWS Secrets Manager first, and then used when needed through `aws-sdk` API calls.
 
 ## Node.js
+
+[Node.js](https://nodejs.org/) is an open-source, cross-platform, JavaScript run-time environment that executes JavaScript code outside of a browser. It is what we're using for our back-end server. More information about installation can be found on its website.
+
+# Running the server
+### With default settings
+If the requirements have been satisfied, to run the server: 
+1. Clone the repo.
+2. Using the terminal/command prompt, go to the cloned repo folder.
+3. Run the command
+```
+$ node app
+```  
+### With custom settings
+1. Make the necessary adjustment to the config file, or create a new one
+2. Run the command
+```
+$ node app --config custom_config.yml
+```   
+
