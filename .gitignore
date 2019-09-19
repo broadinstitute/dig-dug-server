@@ -64,3 +64,4 @@ typings/
 .idea/*
 google.json
 .eslintrc.js
+.editorconfig
