@@ -48,7 +48,7 @@ The `--www` flag also comes with its own shorthand `-w`.
 
 ## AWS Secrets
 
-This new portal is currently using [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) to manage and authorize all credentials, keys and tokens. It is necessary to install and setup before running this web application. Further details and instructions can be found [here](https://github.com/broadinstitute/dig-secrets).
+This new portal framework is currently using [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) to manage and authorize all credentials, keys and tokens. It is necessary to install and set it up before running this web application. Further details and instructions can be found [here](https://github.com/broadinstitute/dig-secrets).
 
 ## Google Authentication
 
