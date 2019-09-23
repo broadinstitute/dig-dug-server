@@ -103,9 +103,9 @@ Once the server is up and running, you can access the web interface from your br
 
 ### Accessing the static resources
 
-[Static resources for the portal](https://github.com/broadinstitute/dig-dug-static-resources), once setup, can be access at
+[Static resources for the portal](https://github.com/broadinstitute/dig-dug-static-resources), once setup, can be access at:
 
-`http://localhost:8090/www/`
+`http://localhost:8090/www/*`
 
 For example:
 
