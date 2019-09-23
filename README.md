@@ -6,13 +6,20 @@ This is a simplified back-end-only server for driving the new knowledge portals.
 
 This readme file will be updated as needed. The following are currently available features.
 
+## The Server
+
+1. Configurations are loaded from a file
+2. Serves 100% static content (html, js, css, images, etc ...)
+3. Gets all static content from a configured location (Github, S3, ...)
+4. Acts as a router for exposed KB end-points (as defined in the config file)
+
 ## Endpoints
 
 `/login`
 Log into the system using a Google account.
 
 `/getMetadata`
-Returns a collection of metadata, in JSON format.
+Returns a collection of metadata, in JSON format. \*Note: this is run once before the server started, but can call again as needed.
 
 `/getDatasets`
 Returns the datasets from the metadata collection, in JSON format.
@@ -87,3 +94,19 @@ $ node app
 ```
 $ node app --config custom_config.yml
 ```
+
+### Accessing the web interface
+
+Once the server is up and running, you can access the web interface from your browser at:
+
+`http://localhost:8090`
+
+### Accessing the static resources
+
+[Static resources for the portal](https://github.com/broadinstitute/dig-dug-static-resources), once setup, can be access at
+
+`http://localhost:8090/www/`
+
+For example:
+
+`http://localhost:8090/www/manhattan.html`
