@@ -8,10 +8,10 @@ This readme file will be updated as needed. The following are currently availabl
 
 ## The Server
 
-1. Configurations are loaded from a file
-2. Serves 100% static content (html, js, css, images, etc ...)
-3. Gets all static content from a configured location (Github, S3, ...)
-4. Acts as a router for exposed KB end-points (as defined in the config file)
+- Configurations are loaded from a file
+- Serves 100% static content (html, js, css, images, etc ...)
+- Gets all static content from a configured location (Github, S3, ...)
+- Acts as a router for exposed KB end-points (as defined in the config file)
 
 ## Endpoints
 
@@ -29,11 +29,11 @@ Returns the phenotypes from the metadata collection, in JSON format.
 
 ## Config files
 
-Config files are in _yaml_ format, and can be loaded at run time. If no config file is selected, the default `config.yml` will be run.
+Config files are in **yaml** format, and can be loaded at run time. If no config file is selected, the default `config.yml` will be run.
 
 ### Selecting a different config file
 
-```
+``` sh
 $ node app --config another_config.yml
 ```
 
@@ -43,13 +43,13 @@ Optionally, you can use the shorthand `-c` flag instead of `--config`.
 
 In addition to selecting a different config file, you can choose to override the static **www** folder for serving assets.
 
-```
+``` sh
 $ node app --config config.yml -www http://linktodomain.com/files
 ```
 
 The `--www` flag also comes with its own shorthand `-w`.
 
-> **Note:** If you want to use serve static files locally, make sure you have the path correctly setup, according on your OS environment. You can change the _www_ path in the config file, or override it at runtime, as stated above.
+> **Note:** If you want to use serve static files locally, make sure you have the path correctly setup, according on your OS environment. You can change the **www** path in the config file, or override it at runtime, as stated above.
 
 # Requirements
 
@@ -75,23 +75,23 @@ If the requirements have been satisfied, to run the server:
 2. Using the terminal/command prompt, go to the cloned repo folder.
 3. Install the necessary dependencies.
 
-```
+``` sh
 $ npm install
 ```
 
 4. Start the server.
 
-```
+``` sh
 $ node app
 ```
 
 ### With custom settings
 
 1. Follow steps 1 - 3 above, if running for the first time.
-2. Make the necessary adjustment to the config file, or create a new one
+2. Make the necessary adjustment to the config file, or create a new one.
 3. Start the server.
 
-```
+``` sh
 $ node app --config custom_config.yml
 ```
 
