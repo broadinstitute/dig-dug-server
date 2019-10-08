@@ -8,7 +8,6 @@ const app = express();
 const util = require("util");
 const yaml = require("js-yaml");
 const fs = require("fs");
-const urlExists = require("url-exists");
 const request = require("request");
 const log4js = require("log4js");
 
@@ -39,7 +38,7 @@ app.set("view engine", "pug");
 app.use(cookieParser());
 
 /* GET home page. */
-app.get("/", function(req, res, next) {
+app.get("/home", function(req, res, next) {
 	let name = req.cookies.name;
 	res.render("index", { title: "Dig Dug Portal", name: name });
 });
@@ -49,25 +48,25 @@ app.get("/login", google.logInLink);
 app.get("/oauth2callback", google.oauth2callback);
 
 //Get datasets
-app.get("/getDatasets", (req, res) => {
+app.get("/kb/getDatasets", (req, res) => {
 	let datasets = metadata.getDatasets();
 	res.json(datasets);
 });
 
 //get datasets w/ given phenotype
-app.get("/getDatasets/:phenotype", (req, res) => {
+app.get("/kb/getDatasets/:phenotype", (req, res) => {
 	let datasets = metadata.getDatasets(req.params.phenotype);
 	res.json(datasets);
 });
 
 //get data for given dataset
-app.use("/getData/:dataset/:phenotype", (req, res) => {
+app.use("/kb/getData/:dataset/:phenotype", (req, res) => {
 	let variants = metadata.getData(req.params.dataset, req.params.phenotype);
 	res.json(variants);
 });
 
 //Get phenotypes
-app.get("/getPhenotypes", (req, res) => {
+app.get("/kb/getPhenotypes", (req, res) => {
 	let phenotypes = metadata.getPhenotypes();
 	res.json(phenotypes);
 });
@@ -125,12 +124,12 @@ function route_github_static_content(config, www) {
 	//static resources are served local instead of github
 	if (checkPath.protocol == "file:") {
 		//serve static files from location in the config
-		app.use("/www", express.static(url.fileURLToPath(resourcePath)));
+		app.use("/", express.static(url.fileURLToPath(resourcePath)));
 
 		//serve static files from location relative to where server is run, i.e. public folder
 		//app.use('/www', express.static(path.join(__dirname, 'www')) );
 	} else {
-		app.get("/www/*", function(req, res) {
+		app.get("/*", function(req, res) {
 			let content = req.originalUrl.substring(4); //remove mount subdirectory from file path, i.e. /www in this case
 			let filePath = resourcePath + content;
 			logger.info("getting file: " + filePath);
@@ -156,15 +155,6 @@ function route_github_static_content(config, www) {
 					new Error("Status 500: couldn't pipe file to client")
 				);
 			});
-
-			//check for error if file doesn't exist
-			// urlExists(filePath, function(err, exists) {
-			// 	if (exists) {
-			// 		req.pipe(request(filePath)).pipe(res);
-			// 	} else {
-			// 		res.status(404).send({ error: "404: file not found" });
-			// 	}
-			// });
 		});
 	}
 }
