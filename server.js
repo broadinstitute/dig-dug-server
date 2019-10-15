@@ -60,10 +60,10 @@ app.get("/kb/getDatasets/:phenotype", (req, res) => {
 });
 
 //get data for given dataset
-app.use("/kb/getData/:dataset/:phenotype", (req, res) => {
-	let variants = metadata.getData(req.params.dataset, req.params.phenotype);
-	res.json(variants);
-});
+// app.use("/kb/getData/:dataset/:phenotype", (req, res) => {
+// 	let variants = metadata.getData(req.params.dataset, req.params.phenotype);
+// 	res.json(variants);
+// });
 
 //Get phenotypes
 app.get("/kb/getPhenotypes", (req, res) => {
@@ -92,13 +92,13 @@ function route_kb_api_requests(config) {
 		//build the api link
 		let apiPath = baseurl + data.urlpath;
 		if (data.method == "POST") {
-			app.post(`/${name}`, (req, res) => {
+			app.post(`/kb/${name}`, (req, res) => {
 				req.pipe(
 					request({ qs: req.query, uri: apiPath, json: true })
 				).pipe(res);
 			});
 		} else if (data.method == "GET") {
-			app.get(`/${name}*`, (req, res) => {
+			app.get(`/kb/${name}*`, (req, res) => {
 				console.log("query", req.query);
 				//REMEMBER - check url exists
 				req.pipe(
