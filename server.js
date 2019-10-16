@@ -1,7 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const url = require("url");
 const request = require("request");
 const log4js = require("log4js");
 const metadata = require("./metadata");
@@ -100,10 +99,7 @@ function route_kb_api_requests(config) {
 }
 
 function route_static_content(config, dist) {
-	const resourcePath = dist ? dist : config.content.dist;
-
-	//serve static files from location in the config
-	app.use("/", express.static(url.fileURLToPath(resourcePath)));
+	app.use("/", express.static(dist ? dist : config.content.dist));
 }
 
 //start function
