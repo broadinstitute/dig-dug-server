@@ -15,9 +15,9 @@ const options = buildOptions({	//config arguments for commandline
 		alias: 'c',
 		default: 'config.yml'
 	},
-	www: {
+	dist: {
 		type: 'string',
-		alias: 'w',
+		alias: 'd',
 		default: ''
 	}
 });
@@ -29,8 +29,8 @@ const args = minimist(process.argv.slice(2), options);
 //console.log("hey: " + JSON.stringify(args, null, 4));
 //console.log("there: " + args.config);
 
-let override_msg = args.www ? `with www=${args.www} ` : '';
+let override_msg = args.dist ? `with dist=${args.dist} ` : '';
 logger.info(`Loading configuration file ${args.config} ${override_msg}and starting server ...`);
 //server.start(localConfig); // start the node js server
 
-server.start(config.loadConfig(args.config), args.www); //load the necessary config file, and overwrite if any
+server.start(config.loadConfig(args.config), args.dist); //load the necessary config file, and overwrite if any
