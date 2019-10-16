@@ -1,5 +1,5 @@
 portal: T2D
-log: foo.log
+log: portal.log
 auth:
     google:
         secretId: google-oauth-portal
@@ -21,3 +21,6 @@ kb:
         getData:
             method: POST
             urlpath: "/dccservices/getData"
+        getGeneData:
+            method: POST
+            urlpath: "/dccservices/getGeneData"
