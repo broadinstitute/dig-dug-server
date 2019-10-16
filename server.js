@@ -167,7 +167,7 @@ function start(config) {
 	logger.info("Getting Metadata, please wait ... ");
 	var promise1 = metadata.getMetadata(config);
 	var promise2 = promise1.then(function() {
-		app.listen(8090, () => logger.info("Server started!"));
+		app.listen(80, () => logger.info("Server started!"));
 	});
 }
 
