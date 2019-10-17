@@ -104,6 +104,8 @@ function route_static_content(config, dist) {
 
 //start function
 function start(config) {
+	let port = config.port || 80;
+
 	enable_logging(config);
 
 	// setup routes
@@ -116,7 +118,7 @@ function start(config) {
 	// get metadata before starting server
 	logger.info("Getting Metadata, please wait ... ");
 	metadata.getMetadata(config).then(() => {
-		app.listen(80, () => logger.info("Server started!"));
+		app.listen(port, () => logger.info(`Server started on port ${port}...`));
 	});
 }
 
