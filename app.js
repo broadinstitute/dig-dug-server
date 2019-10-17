@@ -10,16 +10,16 @@ const logger = log4js.getLogger();
 //logger.level = 'all';
 
 const options = buildOptions({	//config arguments for commandline
-	config: {
-		type: 'string',
-		alias: 'c',
-		default: 'config.yml'
-	},
-	dist: {
-		type: 'string',
-		alias: 'd',
-		default: ''
-	}
+    config: {
+        type: 'string',
+        alias: 'c',
+        default: 'config.yml'
+    },
+    dist: {
+        type: 'string',
+        alias: 'd',
+        default: ''
+    }
 });
 const args = minimist(process.argv.slice(2), options);
 

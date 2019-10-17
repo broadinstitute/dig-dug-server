@@ -1,5 +1,6 @@
 portal: T2D
-log: portal.log
+log: stdout
+port: 8090
 auth:
     google:
         secretId: google-oauth-portal
@@ -9,15 +10,12 @@ content:
 kb:
     name: T2D
     mdv:  mdv41
-    host: "ec2-34-229-106-174.compute-1.amazonaws.com"
-    port: 8090
+    host: "dev.type2diabeteskb.org"
+    port: 80
     expose:
         getRegionData:
             method: POST
             urlpath: "/dccservices/getRegionData"
-        getMetadata:
-            method: GET
-            urlpath: "/dccservices/getMetadata"
         getData:
             method: POST
             urlpath: "/dccservices/getData"
