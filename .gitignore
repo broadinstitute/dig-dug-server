@@ -65,3 +65,4 @@ typings/
 google.json
 .eslintrc.js
 .editorconfig
+config_local.yml
