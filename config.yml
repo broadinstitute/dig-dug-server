@@ -22,3 +22,6 @@ kb:
         getGeneData:
             method: POST
             urlpath: "/dccservices/getGeneData"
+        getPhenotypeData:
+            method: POST
+            urlpath: "/dccservices//graph/phenotype/list/object"
