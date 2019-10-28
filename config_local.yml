@@ -6,7 +6,7 @@ auth:
         secretId: google-oauth-portal
         callbackHost: localhost:8090
 content:
-    dist: "e:/workspace/dig-dug-t2dkp/dist"
+    dist: "/Users/psingh/broadProjects/dig-dug-portal/dist"
 kb:
     name: T2D
     mdv:  mdv41

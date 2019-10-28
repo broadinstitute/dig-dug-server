@@ -80,6 +80,10 @@ function create_routes(config, app) {
         res.json(metadata.cache.metadata);
     });
 
+    app.get("/kb/getPhenotypedata", (req, res) => {
+        res.json(metadata.cache.phenotypes);
+    });
+
     // KB routes
     route_kb_api_requests(config, app);
 
@@ -109,9 +113,11 @@ function start(config) {
     google.useConfig(config);
 
     // get metadata before starting server
-    metadata.getMetadata(config).then(() => {
-        app.listen(port, () => logger.info(`Server started on port ${port}...`));
-    });
+    metadata.getMetadata(config)
+    .then(() => {metadata.getPhenotypedata(config); logger.info(`Getting Phenotypes ...`)})
+    .then(() => {app.listen(port, () => logger.info(`Server started on port ${port}...`));
+  
+});
 }
 
 module.exports = {
