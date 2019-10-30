@@ -2,26 +2,26 @@ portal: T2D
 log: stdout
 port: 8090
 auth:
-    google:
-        secretId: google-oauth-portal
-        callbackHost: localhost:8090
+  google:
+    secretId: google-oauth-portal
+    callbackHost: localhost:8090
 content:
-    dist: "e:/workspace/dig-dug-t2dkp/dist"
+  dist: "e:/workspace/dig-dug-t2dkp/dist"
 kb:
-    name: T2D
-    mdv:  mdv41
-    host: "dev.type2diabeteskb.org"
-    port: 80
-    expose:
-        getRegionData:
-            method: POST
-            urlpath: "/dccservices/getRegionData"
-        getData:
-            method: POST
-            urlpath: "/dccservices/getData"
-        getGeneData:
-            method: POST
-            urlpath: "/dccservices/getGeneData"
-        getPhenotypedata:
-            method: GET
-            urlpath: "/dccservices/graph/phenotype/list/object"
+  name: T2D
+  mdv: mdv41
+  host: "dev.type2diabeteskb.org"
+  port: 80
+  expose:
+    getRegionData:
+      method: POST
+      urlpath: "/dccservices/getRegionData"
+    getData:
+      method: POST
+      urlpath: "/dccservices/getData"
+    getGeneData:
+      method: POST
+      urlpath: "/dccservices/getGeneData"
+    getPhenotypedata:
+      method: GET
+      urlpath: "/dccservices/graph/phenotype/list/object"
