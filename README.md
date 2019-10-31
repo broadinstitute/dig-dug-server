@@ -1,6 +1,6 @@
-# Welcome to DIG Portal v.2.0.0.alpha!
+# Welcome to DIG Portal - Back-end Server
 
-This is a simplified back-end-only server for driving the new knowledge portals. It works in conjunction with the [front-end resources](https://github.com/broadinstitute/dig-dug-static-resources). The separation of services allow each part to function independently, and allow for greater flexibility. I.e. designers can concentrate on the front-end works without needing to know the back-end codes.
+This is a simplified back-end-only **server** for driving the new knowledge portals. It works in conjunction with the [front-end portal](https://github.com/broadinstitute/dig-dug-portal) codes. The separation of services allow each part to function independently, and allow for greater flexibility. I.e. designers can concentrate on the front-end works without needing to know the back-end codes.
 
 ---
 
@@ -18,13 +18,13 @@ This readme file will be updated as needed. The following are currently availabl
 `/login`
 Log into the system using a Google account.
 
-`/getMetadata`
-Returns a collection of metadata, in JSON format. \*Note: this is run once before the server started, but can call again as needed.
+`/kb/getMetadata`
+Returns a collection of metadata, in JSON format. \*Note: this is run once before the server started, but can be called again as needed.
 
-`/getDatasets`
+`/kb/getDatasets`
 Returns the datasets from the metadata collection, in JSON format.
 
-`/getPhenotypes`
+`/kb/getPhenotypes`
 Returns the phenotypes from the metadata collection, in JSON format.
 
 ## Config files
