@@ -6,10 +6,10 @@ auth:
     secretId: google-oauth-portal
     callbackHost: localhost:8090
 content:
-  dist: "e:/workspace/dig-dug-t2dkp/dist"
+  dist: ""
 kb:
   name: T2D
-  mdv: mdv41
+  mdv: ""
   host: "dev.type2diabeteskb.org"
   port: 80
   expose:

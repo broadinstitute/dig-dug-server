@@ -70,7 +70,6 @@ function route_kb_api_requests(config, app) {
 }
 
 function create_routes(config, app) {
-
     // Google OAuth
     app.get("/login", google.logInLink);
     app.get("/oauth2callback", google.oauth2callback);
@@ -87,17 +86,38 @@ function create_routes(config, app) {
     // KB routes
     route_kb_api_requests(config, app);
 
-    //
+    // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
 }
 
+function validateConfig(config) {
+    let valid = true;
+
+    if (!config.content.dist) {
+        logger.error("Missing content.dist from configuration.");
+        valid = false;
+    }
+
+    if (!config.kb.mdv) {
+        logger.error("Missing kb.mdv from configuration.");
+        valid = false;
+    }
+
+    return valid;
+}
 //start function
 function start(config) {
-    let port = config.port || 80;
-    let app = express();
-
     // setup logging
     enable_logging(config);
+
+    let valid = validateConfig(config);
+    if (!valid) {
+        logger.warn("Check your configuration file and try again.");
+        return;
+    }
+
+    let port = config.port || 80;
+    let app = express();
 
     // express plugins
     app.use(cookieParser());
@@ -113,10 +133,11 @@ function start(config) {
     google.useConfig(config);
 
     // get metadata before starting server
-    metadata.getMetadata(config)
-        .then(() => {app.listen(port, () => logger.info(`Server started on port ${port}...`));
-  
-});
+    metadata.getMetadata(config).then(() => {
+        app.listen(port, () =>
+            logger.info(`Server started on port ${port}...`)
+        );
+    });
 }
 
 module.exports = {

@@ -14,13 +14,13 @@ const options = buildOptions({
     config: {
         type: "string",
         alias: "c",
-        default: "config.yml"
+        default: ""
     }
 });
 const args = minimist(process.argv.slice(2), options);
 
-logger.info(
-    `Loading configuration file ${args.config} and starting server ...`
-);
+let msg = args.config ? `${args.config}` : "config.yml";
+
+logger.info(`Loading configuration file ${msg} and starting server ...`);
 
 server.start(config.loadConfig(args.config)); //load the necessary config file, and start server
