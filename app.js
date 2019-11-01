@@ -23,6 +23,4 @@ if (args.config) {
     logger.info(`Overwriting configurations with file ${args.config}.`);
 }
 
-logger.info("Starting server ...");
-
 server.start(config.loadConfig(args.config)); //load the necessary config file, and start server
