@@ -5,20 +5,19 @@ const log4js = require("log4js");
 const logger = log4js.getLogger();
 
 let cache = {
-    metadata: {}
+    metadata: undefined
 };
 
 function getMetadata(config) {
     let url = `http://${config.kb.host}:${config.kb.port}/dccservices/getMetadata?mdv=${config.kb.mdv}`;
 
-    logger.info('Fetching metadata from KB...');
-    
+    logger.info("Fetching metadata from KB...");
+
     return axios
         .get(url)
-        .then(response => cache.metadata = response.data)
+        .then(response => (cache.metadata = response.data))
         .catch(error => logger.error(error));
 }
-
 
 module.exports = {
     getMetadata: getMetadata,

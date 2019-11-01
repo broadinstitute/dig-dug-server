@@ -19,8 +19,10 @@ const options = buildOptions({
 });
 const args = minimist(process.argv.slice(2), options);
 
-let msg = args.config ? `${args.config}` : "config.yml";
+if (args.config) {
+    logger.info(`Overwriting configurations with file ${args.config}.`);
+}
 
-logger.info(`Loading configuration file ${msg} and starting server ...`);
+logger.info("Starting server ...");
 
 server.start(config.loadConfig(args.config)); //load the necessary config file, and start server
