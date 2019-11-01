@@ -12,18 +12,3 @@ kb:
     mdv:  mdv41
     host: "dev.type2diabeteskb.org"
     port: 80
-    expose:
-        getRegionData:
-            method: POST
-            urlpath: "/dccservices/getRegionData"
-        getData:
-            method: POST
-            urlpath: "/dccservices/getData"
-        getGeneData:
-            method: POST
-            urlpath: "/dccservices/getGeneData"
-        getPhenotypes:
-            method: GET
-            urlpath: "/dccservices/graph/phenotype/list/object"
-
-

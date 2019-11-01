@@ -40,32 +40,16 @@ function enable_logging(config) {
 function route_kb_api_requests(config, app) {
     let host = config.kb.host;
     let port = config.kb.port;
-    let expose = config.kb.expose;
-    let mdv = config.kb.mdv;
 
-    //REMEMBER TO ENABLE SSL BEFORE GOING LIVE
-    let baseurl = "http://" + host + ":" + port;
-    let routeNames = Object.keys(expose); //what entry names are exposed?
+    // proxy all POST and GET requests to the KB
+    app.use('/dccservices/*', (req, res) => {
+        let proxy = {
+            uri: `http://${host}:${port}${req.baseUrl}`,
+            qs: req.query,
+            json: true,
+        };
 
-    routeNames.forEach(name => {
-        let data = expose[name];
-        //build the api link
-        let apiPath = baseurl + data.urlpath;
-        if (data.method == "POST") {
-            app.post(`/kb/${name}`, (req, res) => {
-                req.pipe(
-                    request({ qs: req.query, uri: apiPath, json: true })
-                ).pipe(res);
-            });
-        } else if (data.method == "GET") {
-            app.get(`/kb/${name}*`, (req, res) => {
-                console.log("query", req.query);
-                //REMEMBER - check url exists
-                req.pipe(
-                    request({ qs: req.query, uri: apiPath, json: true })
-                ).pipe(res);
-            });
-        }
+        req.pipe(request(proxy)).pipe(res);
     });
 }
 
@@ -75,12 +59,8 @@ function create_routes(config, app) {
     app.get("/oauth2callback", google.oauth2callback);
 
     // metadata routes
-    app.get("/kb/getMetadata", (req, res) => {
+    app.get("/cache/getMetadata", (req, res) => {
         res.json(metadata.cache.metadata);
-    });
-
-    app.get("/kb/getPhenotypedata", (req, res) => {
-        res.json(metadata.cache.phenotypes);
     });
 
     // KB routes
