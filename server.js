@@ -134,9 +134,15 @@ function start(config) {
 
     // get metadata before starting server
     metadata.getMetadata(config).then(() => {
-        app.listen(port, () =>
-            logger.info(`Server started on port ${port}...`)
-        );
+        if (!metadata.cache.metadata) {
+            logger.error(
+                "No metadata received. Please check your connection and try again."
+            );
+        } else {
+            app.listen(port, () =>
+                logger.info(`Server started on port ${port}...`)
+            );
+        }
     });
 }
 
