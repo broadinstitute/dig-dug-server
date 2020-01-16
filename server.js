@@ -42,11 +42,11 @@ function route_kb_api_requests(config, app) {
     let port = config.kb.port;
 
     // proxy all POST and GET requests to the KB
-    app.use('/dccservices/*', (req, res) => {
+    app.use("/dccservices/*", (req, res) => {
         let proxy = {
             uri: `http://${host}:${port}${req.baseUrl}`,
             qs: req.query,
-            json: true,
+            json: true
         };
 
         req.pipe(request(proxy)).pipe(res);
@@ -56,6 +56,7 @@ function route_kb_api_requests(config, app) {
 function create_routes(config, app) {
     // Google OAuth
     app.get("/login", google.logInLink);
+    app.get("/logout", logOut);
     app.get("/oauth2callback", google.oauth2callback);
 
     // metadata routes
@@ -68,6 +69,13 @@ function create_routes(config, app) {
 
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
+}
+
+function logOut(req, res) {
+    //clear all cookies and redirect home
+    res.clearCookie("name");
+    res.clearCookie("email");
+    res.redirect("/");
 }
 
 function validateConfig(config) {
