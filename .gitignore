@@ -67,3 +67,5 @@ google.json
 .editorconfig
 config_local.yml
 .vscode/
+
+package-lock.json
