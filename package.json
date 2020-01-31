@@ -30,6 +30,7 @@
     "mime": "^2.4.4",
     "minimist": "^1.2.0",
     "minimist-options": "^4.0.1",
+    "mysql2": "^2.1.0",
     "nodemon": "^1.19.1",
     "npm": "^6.12.1",
     "opn": "^6.0.0",

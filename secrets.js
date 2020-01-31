@@ -1,6 +1,6 @@
-//removed the const
 const aws = require('aws-sdk');
-const secret = 'google-oauth-portal';
+
+// default region to use
 const region = 'us-east-1';
 
 // create a client to access secrets
@@ -21,6 +21,25 @@ function getSecret(secretId) {
     });
 }
 
+// get the secret - as JSON - in a promise
+async function getSecretJson(secretId) {
+    return getSecret(secretId)
+        .then(data => {
+            if ("SecretString" in data) {
+                return data.SecretString;
+            } else {
+                let buf = new ArrayBuffer(data.SecretBinary, "base64");
+
+                // decode the secret
+                return buf.toString("ascii");
+            }
+        })
+
+        // parse the scret as JSON
+        .then(secret => JSON.parse(secret));
+}
+
 module.exports = {
-    getSecret: getSecret
+    getSecret,
+    getSecretJson
 };
