@@ -61,11 +61,6 @@ function validateConfig(config) {
         valid = false;
     }
 
-    if (!config.kb.mdv) {
-        logger.error("Missing kb.mdv from configuration.");
-        valid = false;
-    }
-
     return valid;
 }
 //start function
