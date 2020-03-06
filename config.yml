@@ -7,8 +7,3 @@ auth:
         callbackHost: localhost:8090
 content:
     dist: ""
-kb:
-    name: T2D
-    mdv:  mdv41
-    host: "dev.type2diabeteskb.org"
-    port: 80
