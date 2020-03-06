@@ -3,7 +3,6 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const request = require("request");
 const log4js = require("log4js");
-const metadata = require("./metadata");
 const google = require("./google");
 
 let logger = undefined;
@@ -37,35 +36,11 @@ function enable_logging(config) {
     logger = log4js.getLogger();
 }
 
-function route_kb_api_requests(config, app) {
-    let host = config.kb.host;
-    let port = config.kb.port;
-
-    // proxy all POST and GET requests to the KB
-    app.use("/dccservices/*", (req, res) => {
-        let proxy = {
-            uri: `http://${host}:${port}${req.baseUrl}`,
-            qs: req.query,
-            json: true
-        };
-
-        req.pipe(request(proxy)).pipe(res);
-    });
-}
-
 function create_routes(config, app) {
     // Google OAuth
     app.get("/login", google.logInLink);
     app.get("/logout", logOut);
     app.get("/oauth2callback", google.oauth2callback);
-
-    // metadata routes
-    app.get("/cache/getMetadata", (req, res) => {
-        res.json(metadata.cache.metadata);
-    });
-
-    // KB routes
-    route_kb_api_requests(config, app);
 
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
@@ -121,17 +96,9 @@ function start(config) {
     google.useConfig(config);
 
     // get metadata before starting server
-    metadata.getMetadata(config).then(() => {
-        if (!metadata.cache.metadata) {
-            logger.error(
-                "No metadata received. Please check your connection and try again."
-            );
-        } else {
-            app.listen(port, () =>
-                logger.info(`Server started on port ${port}...`)
-            );
-        }
-    });
+    app.listen(port, () =>
+        logger.info(`Server started on port ${port}...`)
+    );
 }
 
 module.exports = {
