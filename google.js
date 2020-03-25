@@ -86,7 +86,7 @@ const oauth2callback = function (req, res, next) {
             .then(user => logins.createSession(user.email, user.name, user.access_token))
             .then(session => {
                 res.cookie("session", session);
-                res.redirect("/"); //redirect home
+                res.redirect(req.cookies.whereAmI || "/"); //redirect home
             })
             .catch(function (e) {
                 next(new Error(e.message));
