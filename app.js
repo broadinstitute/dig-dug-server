@@ -2,8 +2,8 @@ const buildOptions = require("minimist-options");
 const minimist = require("minimist");
 const log4js = require("log4js");
 
-const config = require("./config"); //load config file
-const server = require("./server"); //load server file
+const config = require("./config");
+const server = require("./server");
 
 //set logger level
 const logger = log4js.getLogger();
