@@ -82,19 +82,11 @@ const oauth2callback = function (req, res, next) {
     if (!code) {
         next(new Error("No code provided"));
     } else {
-<<<<<<< HEAD
-        getInfo(code)
-            .then(function(data) {
-                res.cookie("email", data.email);
-                res.cookie("name", data.name);
-                res.redirect(req.cookies.whereAmI || "/"); //redirect back to where user came from
-=======
         getUserInfo(code)
             .then(user => logins.createSession(user.email, user.name, user.access_token))
             .then(session => {
                 res.cookie("session", session);
                 res.redirect("/"); //redirect home
->>>>>>> origin/jm-logins
             })
             .catch(function (e) {
                 next(new Error(e.message));
