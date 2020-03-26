@@ -30,16 +30,17 @@ In order to enable login into the portal with a Google account, it is first requ
 the necessary keys and secrets from [Google developer console](https://developers.google.com/identity/sign-in/web/sign-in). 
 Such information is recommended to be saved to AWS Secrets Manager first, and then used when needed through `aws-sdk` API calls.
 
-## Node.js
+## Node.js and npm
 
 [Node.js](https://nodejs.org/) is an open-source, cross-platform, JavaScript run-time environment that executes 
 JavaScript code outside of a browser. It is what we're using for our back-end server and is managed using the 
-node package manager `npm`. More information about installation of the node package manager can be found
-[here](https://www.npmjs.com/get-npm}).
+node package manager `npm`,  which  needs to be installed before building the project.
+
+Information about how to install the node package manager can be found [here](https://www.npmjs.com/get-npm}).
 
 #  Installing and Running the Server
 
-If the tool and environment prerequisites have been satisfied, to run the server:
+If the above tool and environment prerequisites have been satisfied, to run the server:
 
 1. Clone the repo then go to the cloned repo folder.
 2. Install the necessary Javascript module dependencies.
