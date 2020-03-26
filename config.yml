@@ -6,4 +6,4 @@ auth:
         secretId: google-oauth-portal
         callbackHost: localhost:8090
 content:
-    dist: ""
+    dist: "../dig-dug-portal/dist"  # this sample value assumes portal software in an adjacent project folder

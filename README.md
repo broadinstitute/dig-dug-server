@@ -6,6 +6,53 @@ This is a simplified back-end-only **server** for driving the new knowledge port
 
 This readme file will be updated as needed. The following are currently available features.
 
+## Getting Started
+
+### Installing npm
+
+This project is written in Javascript and uses `npm` for managing module dependencies and running the system. 
+which needs to be installed. Instructions for installing `npm` are [here](https://www.npmjs.com/get-npm}).
+
+### Installing Javascript Dependencies
+
+To install the project's Javascript module dependencies, type:
+
+``` 
+cd /path/to/your/project/dig-dug-server
+npm install
+```
+
+You may initially get some errors of the form:
+
+```  
+npm WARN <some-package> requires a peer of <some-other-package> but none is installed. You must install peer dependencies yourself.
+```
+
+This issue is generally resolved by installing the *<some-other-package>* independently as follows:
+
+``` 
+npm install --save-dev <some-other-package>
+```
+
+### Configuration
+
+A `config.yml` yaml file in the project documents site-specific server parameters, which may be customized. 
+The default file may simply be copied into another file, for example, into `config_local.yml` and the contents 
+customized. In particular, the `content: dist:` tag value should point to the local front-end portal code folder of 
+the site.
+
+### Running the Server
+
+From within the *dig-dug-server* folder, type:
+ 
+```
+# Here, it is assumed that you are using a custom site specific server configuration file, as explained above
+node app -c config_local.yml
+```
+
+The web site should now show up in your local web browser at the configuration `callbackHost:` specified URL, e.g. 
+[http://localhost:8090](http://localhost:8090)`
+
 ## The Server
 
 - Configurations are loaded from a file
