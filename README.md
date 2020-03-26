@@ -18,6 +18,9 @@ This readme file will be updated as needed. The following are currently availabl
 
 # Prerequisites
 
+Before installing, building and running a fully operational server, some basic authentication and build tools need to 
+be installed and configured.
+
 ## AWS Secrets
 
 This new portal framework is currently using [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) to manage 
