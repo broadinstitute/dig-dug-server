@@ -4,6 +4,7 @@ const path = require("path");
 const request = require("request");
 const log4js = require("log4js");
 const google = require("./google");
+const logins = require("./logins");
 
 let logger = undefined;
 
@@ -48,8 +49,7 @@ function create_routes(config, app) {
 
 function logOut(req, res) {
     //clear all cookies and redirect home
-    res.clearCookie("name");
-    res.clearCookie("email");
+    res.clearCookie("session");
     res.redirect("/");
 }
 
@@ -89,6 +89,9 @@ function start(config) {
 
     // google auth
     google.useConfig(config);
+
+    // technically this is optional, but logins won't work if it fails
+    logins.connectToDatabase(config);
 
     // get metadata before starting server
     app.listen(port, () =>
