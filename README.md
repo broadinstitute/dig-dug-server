@@ -1,24 +1,66 @@
 # Welcome to DIG Portal - Back-end Server
 
-This is a simplified back-end-only **server** for driving the new knowledge portals. It works in conjunction with the [front-end portal](https://github.com/broadinstitute/dig-dug-portal) codes. The separation of services allow each part to function independently, and allow for greater flexibility. I.e. designers can concentrate on the front-end works without needing to know the back-end codes.
+This is a simplified back-end-only **server** for driving the new knowledge portals. It works in conjunction with 
+the [front-end portal](https://github.com/broadinstitute/dig-dug-portal) codes. The separation of services allow each 
+part to function independently, and allow for greater flexibility. I.e. designers can concentrate on the front-end 
+works without needing to know the back-end codes.
 
 ---
 
 This readme file will be updated as needed. The following are currently available features.
 
-## Getting Started
+# Overview of the Server
 
-### Installing npm
+- Configurations are loaded from a file
+- Serves 100% static content (html, js, css, images, etc ...)
+- Gets all static content from a configured location (Github, S3, ...)
+- Acts as a router for exposed KB end-points (as defined in the config file)
 
-This project is written in Javascript and uses `npm` for managing module dependencies and running the system. 
-which needs to be installed. Instructions for installing `npm` are [here](https://www.npmjs.com/get-npm}).
+# Prerequisites
 
-### Installing Javascript Dependencies
+## AWS Secrets
 
-To install the project's Javascript module dependencies, type:
+This new portal framework is currently using [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) to manage 
+and authorize all credentials, keys and tokens. It is necessary to install and set it up before running this web 
+application. Further details and instructions can be found [here](https://github.com/broadinstitute/dig-secrets).
 
-``` 
-cd /path/to/your/project/dig-dug-server
+## Google Authentication
+
+In order to enable login into the portal with a Google account, it is first required to setup a project, acquire 
+the necessary keys and secrets from [Google developer console](https://developers.google.com/identity/sign-in/web/sign-in). 
+Such information is recommended to be saved to AWS Secrets Manager first, and then used when needed through `aws-sdk` API calls.
+
+## Node.js
+
+[Node.js](https://nodejs.org/) is an open-source, cross-platform, JavaScript run-time environment that executes 
+JavaScript code outside of a browser. It is what we're using for our back-end server and is managed using the 
+node package manager `npm`. More information about installation of the node package manager can be found
+[here](https://www.npmjs.com/get-npm}).
+
+#  Installing and Running the Server
+
+If the tool and environment prerequisites have been satisfied, to run the server:
+
+1. Clone the repo then go to the cloned repo folder.
+2. Install the necessary Javascript module dependencies.
+3. Configure the server.
+4. Start the server.
+5. Access the web interface
+
+Each of these steps is outlined here below.
+
+## 1.Clone the repo then go to the cloned repo folder.
+
+```sh 
+git clone https://github.com/broadinstitute/dig-dug-server.git
+cd dig-dug-server
+```
+
+## 2. Install the necessary Javascript module dependencies.
+
+To install the project's Javascript module dependencies, from within dig-dug-server project root folder, type:
+
+```sh
 npm install
 ```
 
@@ -34,53 +76,34 @@ This issue is generally resolved by installing the *<some-other-package>* indepe
 npm install --save-dev <some-other-package>
 ```
 
-### Configuration
+### Special Note to Mac OSX Developers
 
-A `config.yml` yaml file in the project documents site-specific server parameters, which may be customized. 
-The default file may simply be copied into another file, for example, into `config_local.yml` and the contents 
-customized. In particular, the `content: dist:` tag value should point to the local front-end portal code folder of 
-the site.
+Before installing the above npm dependencies on MacOSX, you may need to ensure that `node-gyp` is properly configured. 
+See [here](https://www.npmjs.com/package/node-gyp) for details. Note: if your Mac OSX is the Catalina release, 
+see [the special note on properly configuring Catalina][https://github.com/nodejs/node-gyp/blob/HEAD/macOS_Catalina.md).  
 
-### Running the Server
+## 3. Configure the server.
 
-From within the *dig-dug-server* folder, type:
+A  default `config.yml` yaml file in the project documents site-specific server parameters, which may be customized 
+(see below). In particular, the `content: dist:` tag value should point to the local front-end portal code folder of 
+the site. The default `config.yml` file points to a local peer folder with the `dig-dug-portal`  distribution. This  
+`config.yml` file may be copied then customized to local site needs and file layouts then used to start the server.
+
+## 4. Start the server.
+
+To run the server using the default configuration, within the *dig-dug-server* folder, type:
  
-```
-# Here, it is assumed that you are using a custom site specific server configuration file, as explained above
-node app -c config_local.yml
+```sh
+node app
 ```
 
-The web site should now show up in your local web browser at the configuration `callbackHost:` specified URL, e.g. 
+The web site should now be visible in your local web browser at the configuration `callbackHost:` specified URL, i.e.
 [http://localhost:8090](http://localhost:8090)`
 
-## The Server
 
-- Configurations are loaded from a file
-- Serves 100% static content (html, js, css, images, etc ...)
-- Gets all static content from a configured location (Github, S3, ...)
-- Acts as a router for exposed KB end-points (as defined in the config file)
+### Running the server with a different config file
 
-## Endpoints
-
-`/login`
-Log into the system using a Google account.
-
-`/kb/getMetadata`
-Returns a collection of metadata, in JSON format. \*Note: this is run once before the server started, but can be called again as needed.
-
-`/kb/getDatasets`
-Returns the datasets from the metadata collection, in JSON format.
-
-`/kb/getPhenotypes`
-Returns the phenotypes from the metadata collection, in JSON format.
-
-## Config files
-
-Config files are in **yaml** format, and can be loaded at run time. If no config file is selected, the default `config.yml` will be run.
-
-### Selecting a different config file
-
-``` sh
+```sh
 $ node app --config another_config.yml
 ```
 
@@ -96,59 +119,31 @@ $ node app --config config.yml -www http://linktodomain.com/files
 
 The `--www` flag also comes with its own shorthand `-w`.
 
-> **Note:** If you want to use serve static files locally, make sure you have the path correctly setup, according on your OS environment. You can change the **www** path in the config file, or override it at runtime, as stated above.
+> **Note:** If you want to use serve static files locally, make sure you have the path correctly setup, according on 
+>your OS environment. You can change the **www** path in the config file, or override it at runtime, as stated above.
 
-# Requirements
-
-## AWS Secrets
-
-This new portal framework is currently using [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) to manage and authorize all credentials, keys and tokens. It is necessary to install and set it up before running this web application. Further details and instructions can be found [here](https://github.com/broadinstitute/dig-secrets).
-
-## Google Authentication
-
-In order to enable login into the portal with a Google account, it is first required to setup a project, acquire the necessary keys and secrets from [Google developer console](https://developers.google.com/identity/sign-in/web/sign-in). Such information is recommended to be saved to AWS Secrets Manager first, and then used when needed through `aws-sdk` API calls.
-
-## Node.js
-
-[Node.js](https://nodejs.org/) is an open-source, cross-platform, JavaScript run-time environment that executes JavaScript code outside of a browser. It is what we're using for our back-end server. More information about installation can be found on its website.
-
-# Running the server
-
-### With default settings
-
-If the requirements have been satisfied, to run the server:
-
-1. Clone the repo.
-2. Using the terminal/command prompt, go to the cloned repo folder.
-3. Install the necessary dependencies.
-
-``` sh
-$ npm install
-```
-
-4. Start the server.
-
-``` sh
-$ node app
-```
-
-### With custom settings
-
-1. Follow steps 1 - 3 above, if running for the first time.
-2. Make the necessary adjustment to the config file, or create a new one.
-3. Start the server.
-
-``` sh
-$ node app --config custom_config.yml
-```
-
-### Accessing the web interface
+## 5. Access the web interface
 
 Once the server is up and running, you can access the web interface from your browser at:
 
 `http://localhost:8090`
 
-### Accessing the static resources
+## Endpoints
+
+`/login`
+Log into the system using a Google account.
+
+`/kb/getMetadata`
+Returns a collection of metadata, in JSON format. \*Note: this is run once before the server started, but can 
+be called again as needed.
+
+`/kb/getDatasets`
+Returns the datasets from the metadata collection, in JSON format.
+
+`/kb/getPhenotypes`
+Returns the phenotypes from the metadata collection, in JSON format.
+
+## Accessing the static resources
 
 [Static resources for the portal](https://github.com/broadinstitute/dig-dug-static-resources), once setup, can be access at:
 
