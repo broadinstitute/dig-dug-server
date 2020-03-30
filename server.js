@@ -1,7 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const request = require("request");
 const log4js = require("log4js");
 const google = require("./google");
 const logins = require("./logins");
@@ -48,9 +47,16 @@ function create_routes(config, app) {
 }
 
 function logOut(req, res) {
-    //clear all cookies and redirect home
-    res.clearCookie("session");
+    res.clearCookie("session", { domain: getDomain(req.hostname) });
     res.redirect("/");
+}
+
+//get domain from hostname
+function getDomain(host) {
+    let parts = host.split(".");
+    if (parts.length >= 2) {
+        return parts[parts.length - 2] + "." + parts[parts.length - 1];
+    } else return host;
 }
 
 function validateConfig(config) {
@@ -94,9 +100,7 @@ function start(config) {
     logins.connectToDatabase(config);
 
     // get metadata before starting server
-    app.listen(port, () =>
-        logger.info(`Server started on port ${port}...`)
-    );
+    app.listen(port, () => logger.info(`Server started on port ${port}...`));
 }
 
 module.exports = {
