@@ -2,9 +2,9 @@ portal: T2D
 log: stdout
 port: 8090
 auth:
-    google:
-        secretId: google-oauth-portal
-        callbackHost: localhost:8090
+  google:
+    secretId: google-oauth-portal
+    callbackHost: localhost.com:8090
 content:
     dist: "../dig-dug-portal/dist"  # this sample value assumes portal software in an adjacent project folder
 logins: dig-dug-logins

@@ -3,7 +3,7 @@ const url = require("url");
 const log4js = require("log4js");
 
 const secretsInfo = require("./secrets");
-const logins = require('./logins');
+const logins = require("./logins");
 
 //set logger level
 const logger = log4js.getLogger();
@@ -16,14 +16,14 @@ var shared = {
 };
 
 //shared config file
-const useConfig = async function (config) {
+const useConfig = async function(config) {
     //get secretID from config file
     shared.secretID = config.auth.google.secretId;
     shared.configFile = config;
 
     secretsInfo
         .getSecret(shared.secretID)
-        .then(function (data) {
+        .then(function(data) {
             if ("SecretString" in data) {
                 //logger.debug("secret data: " + JSON.stringify(data, null, 4));
                 return data.SecretString;
@@ -33,11 +33,11 @@ const useConfig = async function (config) {
                 return buf.toString("ascii");
             }
         })
-        .then(function (secrets) {
+        .then(function(secrets) {
             shared.pkeys = JSON.parse(secrets);
             return shared.pkeys;
         })
-        .catch(function (e) {
+        .catch(function(e) {
             return new Error(e.message);
         });
 };
@@ -56,7 +56,7 @@ function getAuthenticatedClient(config, keys) {
 }
 
 //generate login link for auth
-const logInLink = async function (req, res, next) {
+const logInLink = async function(req, res, next) {
     // Generate the url that will be used for the consent dialog.
 
     //create a client object
@@ -74,7 +74,7 @@ const logInLink = async function (req, res, next) {
     res.redirect(authorizeUrl);
 };
 
-const oauth2callback = function (req, res, next) {
+const oauth2callback = function(req, res, next) {
     const uri = `${req.protocol}://${req.headers.host}`;
     const qs = new url.URL(req.url, uri).searchParams;
     let code = qs.get("code");
@@ -83,18 +83,22 @@ const oauth2callback = function (req, res, next) {
         next(new Error("No code provided"));
     } else {
         getUserInfo(code)
-            .then(user => logins.createSession(user.email, user.name, user.access_token))
+            .then(user =>
+                logins.createSession(user.email, user.name, user.access_token)
+            )
             .then(session => {
-                res.cookie("session", session);
-                res.redirect(req.cookies.whereAmI || "/"); //redirect home
+                res.cookie("session", session, {
+                    domain: req.hostname //require explicit domain set to work with subdomains
+                });
+                res.redirect(req.cookies.whereAmI || "/"); //redirect back or home
             })
-            .catch(function (e) {
+            .catch(function(e) {
                 next(new Error(e.message));
             });
     }
 };
 
-const getUserInfo = async function (code) {
+const getUserInfo = async function(code) {
     let oAuth2Client = await getAuthenticatedClient(
         shared.configFile,
         shared.pkeys
@@ -124,5 +128,5 @@ module.exports = {
     logInLink,
     oauth2callback,
     useConfig,
-    getUserInfo,
+    getUserInfo
 };
