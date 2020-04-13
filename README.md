@@ -149,8 +149,16 @@ see [the special note on properly configuring Catalina](https://github.com/nodej
 
 A  default `config.yml` yaml file in the project documents site-specific server parameters, which may be customized 
 (see below). In particular, the `content: dist:` tag value should point to the local front-end portal code folder of 
-the site. The default `config.yml` file points to a local peer folder with the `dig-dug-portal`  distribution. This  
-`config.yml` file may be copied then customized to local site needs and file layouts then used to start the server.
+the site. The default `config.yml` file points to a local peer folder with the `dig-dug-portal`  distribution. An 
+local `override_config.yml` file may be created to override specific tags to customize the portal to a local site 
+installation, which can then be applied as an optional configuration file at server start-up as follows:
+
+```sh
+$ node app --config override_config.yml
+```
+
+Optionally, you can use the shorthand `-c` flag instead of `--config`. Values specified in that file will override 
+the values of equivalent tags in the default `config.yml` file.
 
 ## 4. Start the server.
 
@@ -162,18 +170,6 @@ node app
 
 The web site should now be visible in your local web browser at the configuration `callbackHost:` specified URL, i.e.
 [http://localhost:8090](http://localhost:8090)`
-
-
-### Overriding the Default Configuration Settings
-
-An optional configuration file can be given at server start-up. Values specified in that file will override their 
-equivalent tags in the default `config.yml` file.
-
-```sh
-$ node app --config override_config.yml
-```
-
-Optionally, you can use the shorthand `-c` flag instead of `--config`.
 
 ## 5. Access the web interface
 
