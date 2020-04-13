@@ -143,7 +143,7 @@ npm install --save-dev <some-other-package>
 
 Before installing the above npm dependencies on MacOSX, you may need to ensure that `node-gyp` is properly configured. 
 See [here](https://www.npmjs.com/package/node-gyp) for details. Note: if your Mac OSX is the Catalina release, 
-see [the special note on properly configuring Catalina][https://github.com/nodejs/node-gyp/blob/HEAD/macOS_Catalina.md).  
+see [the special note on properly configuring Catalina](https://github.com/nodejs/node-gyp/blob/HEAD/macOS_Catalina.md).  
 
 ## 3. Configure the server.
 
