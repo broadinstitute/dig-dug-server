@@ -3,6 +3,7 @@ log: stdout
 port: 8090
 auth:
   google:
+    UAId: "UA-163102392-1",  # RMB Gmail Analytics: Broad Diabetic Portal GA Property UA identifier
     secretId: google-oauth-portal
     callbackHost: localhost.com:8090
 content:

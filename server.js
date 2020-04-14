@@ -1,3 +1,5 @@
+
+const ExpressGA = require("express-universal-analytics")
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const path = require("path");
@@ -85,6 +87,9 @@ function start(config) {
 
     // express plugins
     app.use(cookieParser());
+
+    // Google Analytics
+    app.use(ExpressGA(config.auth.google.UAId));
 
     // express settings
     app.set("views", path.join(__dirname, "views"));
