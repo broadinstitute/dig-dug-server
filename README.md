@@ -109,7 +109,7 @@ npm WARN <some-package> requires a peer of <some-other-package> but none is inst
 This issue is generally resolved by installing the *<some-other-package>* independently as follows:
 
 ``` 
-npm install --save-dev <some-other-package>
+npm install <some-other-package>
 ```
 
 ### Special Note to Mac OSX Developers
