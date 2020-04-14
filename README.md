@@ -65,6 +65,26 @@ In order to enable login into the portal with a Google account, it is first requ
 
 [Node.js](https://nodejs.org/) is an open-source, cross-platform, JavaScript run-time environment that executes JavaScript code outside of a browser. It is what we're using for our back-end server. More information about installation can be found on its website.
 
+## For testing Google logins and cookies across subdomains (Optional)
+
+Most browsers cannot access subdomains of localhost, and cookies won't work with them either. Therefore, DNS entries need to be added to the *hosts* file for development. In effect, this creates pseudo domains and subdomains that are accessible by most browsers.
+
+ ```
+127.0.0.1       localhost.com
+127.0.0.1       md.localhost.com
+127.0.0.1       t2d.localhost.com
+127.0.0.1       sleep.localhost.com
+127.0.0.1       cd.localhost.com
+127.0.0.1       cvd.localhost.com
+```
+Hosts file locations are listed below, and will likely need admin privilege/sudo to edit.
+
+**Windows:** `C:\Windows\System32\Drivers\etc\hosts`
+
+**Macs:** `/private/etc/hosts`, also accessible at `/etc/hosts`
+
+**Linux:** Depends on distributions, but it's most likely `/etc/hosts`
+
 # Running the server
 
 ### With default settings
