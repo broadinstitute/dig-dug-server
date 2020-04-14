@@ -124,8 +124,6 @@ A `config.yml` yaml file in the project documents default site-specific server p
 node app
 ```
 
-The web site should now be visible in your local web browser at the configuration `callbackHost:` specified URL, i.e. [http://localhost:8090](http://localhost:8090)
-
 The server parameters in the `config.yml` file may be overridden. In particular, the `content: dist:` tag value should point to the local front-end portal code folder of the site. The default `config.yml` file points to a local peer folder with the `dig-dug-portal`  distribution. An local `override_config.yml` file may be created to override specific tags to customize the portal to a local site installation, which can then be applied as an optional configuration file at the server start-up, as follows:
 
 ```sh
@@ -136,9 +134,7 @@ Optionally, you can use the shorthand `-c` flag instead of `--config`. Values sp
 
 ## 4. Access the web interface
 
-Once the server is up and running, you can access the web interface from your browser at:
-
-`http://localhost:8090`
+The web site should now be visible in your local web browser at the configuration `callbackHost:` specified URL, i.e. [http://localhost:8090](http://localhost:8090)
 
 ### Special Endpoints
 
