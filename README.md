@@ -74,7 +74,31 @@ AWS Secrets are indexed under a "Secret Name". A slight source of confusion is t
 
 Information about how to install the node package manager can be found [here](https://www.npmjs.com/get-npm}).
 
-#  Installing and Running the Server
+## For testing Google logins and cookies across subdomains (Optional)
+
+Most browsers cannot access subdomains of localhost, and cookies won't work with them either. Therefore, DNS entries need to be added to the *hosts* file for development. In effect, this creates pseudo domains and subdomains that are accessible by most browsers.
+
+ ```
+127.0.0.1       localhost.com
+127.0.0.1       md.localhost.com
+127.0.0.1       t2d.localhost.com
+127.0.0.1       sleep.localhost.com
+127.0.0.1       cd.localhost.com
+127.0.0.1       cvd.localhost.com
+```
+Hosts file locations are listed below, and will likely need admin privilege/sudo to edit.
+
+**Windows:** `C:\Windows\System32\Drivers\etc\hosts`
+
+**Macs:** `/private/etc/hosts`, also accessible at `/etc/hosts`
+
+**Linux:** Depends on distributions, but it's most likely `/etc/hosts`
+
+## Google Analytics
+
+To activate Google Analytics in the application, with a `Tracking ID` of format "UA-#########-#", corresponding to a `Property` within a registered [Google Analytics](https://analytics.google.com/) needs to be obtained, then inserted into as the value of the `config.auth.google.UAId` tag in a `config_local.yml` file to be used to override the empty corresponding tag within the default config.yml file during server start up (as noted below).
+
+# Installing and Running the Server
 
 If the above tool and environment prerequisites have been satisfied, to run the server:
 
@@ -124,10 +148,10 @@ A `config.yml` yaml file in the project documents default site-specific server p
 node app
 ```
 
-The server parameters in the `config.yml` file may be overridden. In particular, the `content: dist:` tag value should point to the local front-end portal code folder of the site. The default `config.yml` file points to a local peer folder with the `dig-dug-portal`  distribution. An local `override_config.yml` file may be created to override specific tags to customize the portal to a local site installation, which can then be applied as an optional configuration file at the server start-up, as follows:
+The server parameters in the `config.yml` file may be overridden. In particular, the `content: dist:` tag value should point to the local front-end portal code folder of the site. The default `config.yml` file points to a local peer folder with the `dig-dug-portal`  distribution. Create a `config_local.yml` file to override specific tags to customize the portal to a given site installation, to apply as an optional configuration file at the server start-up, as follows:
 
 ```sh
-$ node app --config override_config.yml
+$ node app --config config_local.yml
 ```
 
 Optionally, you can use the shorthand `-c` flag instead of `--config`. Values specified in that file will override the values of equivalent tags in the default `config.yml` file.

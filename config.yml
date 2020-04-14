@@ -3,7 +3,8 @@ log: stdout
 port: 8090
 auth:
   google:
-    UAId: "UA-163102392-1",  # RMB Gmail Analytics: Broad Diabetic Portal GA Property UA identifier
+    # To track the site using Google Analytics, a non-empty GA Property UA identifier needs to be provided here
+    UAId: ""
     secretId: google-oauth-portal
     callbackHost: localhost.com:8090
 content:

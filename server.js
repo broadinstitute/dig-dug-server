@@ -88,8 +88,15 @@ function start(config) {
     // express plugins
     app.use(cookieParser());
 
-    // Google Analytics
-    app.use(ExpressGA(config.auth.google.UAId));
+    /*
+     Will only insert middleware to process Google Analytics if a non-empty
+     Google Analytics Property Tracking identifier of format "UA-#########-#"
+     is configured in the config file under tag config.auth.google.UAId
+     */
+    let ua_id = config.auth.google.UAId;
+    if (ua_id) {
+        app.use(ExpressGA(ua_id));
+    }
 
     // express settings
     app.set("views", path.join(__dirname, "views"));
