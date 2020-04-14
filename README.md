@@ -74,7 +74,27 @@ AWS Secrets are indexed under a "Secret Name". A slight source of confusion is t
 
 Information about how to install the node package manager can be found [here](https://www.npmjs.com/get-npm}).
 
-#  Installing and Running the Server
+## For testing Google logins and cookies across subdomains (Optional)
+
+Most browsers cannot access subdomains of localhost, and cookies won't work with them either. Therefore, DNS entries need to be added to the *hosts* file for development. In effect, this creates pseudo domains and subdomains that are accessible by most browsers.
+
+ ```
+127.0.0.1       localhost.com
+127.0.0.1       md.localhost.com
+127.0.0.1       t2d.localhost.com
+127.0.0.1       sleep.localhost.com
+127.0.0.1       cd.localhost.com
+127.0.0.1       cvd.localhost.com
+```
+Hosts file locations are listed below, and will likely need admin privilege/sudo to edit.
+
+**Windows:** `C:\Windows\System32\Drivers\etc\hosts`
+
+**Macs:** `/private/etc/hosts`, also accessible at `/etc/hosts`
+
+**Linux:** Depends on distributions, but it's most likely `/etc/hosts`
+
+# Installing and Running the Server
 
 If the above tool and environment prerequisites have been satisfied, to run the server:
 
