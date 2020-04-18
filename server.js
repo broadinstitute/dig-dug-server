@@ -1,7 +1,6 @@
 
 const ExpressGA = require("express-universal-analytics")
 const express = require("express");
-const requestIp = require('request-ip');
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const log4js = require("log4js");
@@ -73,46 +72,6 @@ function validateConfig(config) {
     return valid;
 }
 
-// middleware that creates an anonymous session when no registered user session is seen
-function getOrCreateSession() {
-    return function (req, res, next) {
-
-        let fullClientIp = requestIp.getClientIp(req);
-        logger.debug('fullClientIp:', fullClientIp);
-        let clientIpPart = fullClientIp.split(':');
-        logger.debug('clientIpPart:', clientIpPart);
-        let clientIp = clientIpPart[clientIpPart.length - 1]
-        logger.debug('Client IP:', clientIp);
-
-        logger.debug("Request Headers:\n", JSON.stringify(req.headers));
-        logger.debug('Request Type:', req.method);
-
-        let session = false;
-        if (req.cookies) {
-            session = req.cookies.session;
-        }
-
-        if (session) {
-            logger.debug('Session found! User email:', session[0]);
-        } else {
-            // Attempt to create a synthetic but functional session object?
-            session = [
-                ''.concat("anonymous@",clientIp),
-                "anonymous",
-                "access_token",
-                "false"
-            ];
-            // spoof the request to include the new session cookie as well?
-            req.cookies.session = res.cookie("session", session, {
-                domain: req.hostname //require explicit domain set to work with subdomains
-            });
-        }
-        logger.debug('Session: ', session);
-
-        next();
-    };
-}
-
 //start function
 function start(config) {
     // setup logging
@@ -131,7 +90,7 @@ function start(config) {
     app.use(cookieParser());
 
     // Elaborated session management
-    app.use(getOrCreateSession());
+    app.use(logins.getOrCreateSession);
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty
