@@ -1,6 +1,7 @@
 
 const ExpressGA = require("express-universal-analytics")
 const express = require("express");
+const requestIp = require('request-ip');
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const log4js = require("log4js");
@@ -87,6 +88,17 @@ function start(config) {
 
     // express plugins
     app.use(cookieParser());
+
+    // session management
+    app.use('/', function(req, res, next) {
+        let fullClientIp = requestIp.getClientIp(req);
+        let clientIpPart = fullClientIp.split(':');
+        let clientIp = clientIpPart[clientIpPart.length - 1]
+        logger.debug('Client IP:', clientIp);
+        logger.debug("Request Headers:\n",JSON.stringify(req.headers));
+        logger.debug('Request Type:', req.method);
+        next();
+    });
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty
