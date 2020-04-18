@@ -1,7 +1,9 @@
+const uuidv4 = require('uuid/v4');
 const log4js = require("log4js");
 const mysql = require('mysql2/promise');
 const secrets = require('./secrets');
 const requestIp = require('request-ip');
+
 
 // get log object
 const logger = log4js.getLogger();
@@ -67,8 +69,19 @@ async function insertSession(email, name, access_token) {
     return await connectionPool.execute(insert, [email, name, access_token]);
 }
 
+const anonymous_session = {};
+
 // lookup a session by email
 async function getSession(session) {
+
+    if(session in anonymous_session) {
+        logger.debug("Anonymous session cookie found!");
+        //return anonymous_session[session];
+        return undefined;
+    }
+
+    logger.debug("Checking for registered user's session cookie!");
+
     let select = `
     SELECT email, name, access_token, admin FROM logins
     WHERE session=? AND expires>NOW()
@@ -97,6 +110,7 @@ const getOrCreateSession = function (req, res, next) {
 
         logger.debug("Request Headers:\n", JSON.stringify(req.headers));
         logger.debug('Request Type:', req.method);
+        logger.debug('Cookies:', req.cookies);
 
         let session = false;
         if (req.cookies) {
@@ -104,21 +118,27 @@ const getOrCreateSession = function (req, res, next) {
         }
 
         if (session) {
-            logger.debug('Session found! User email:', session[0]);
+            logger.debug("Session cookie found!");
         } else {
+            logger.debug("Creating new anonymous session?");
+
             // Attempt to create a synthetic but functional session object?
-            session = [
+            let anonymous_user = [
                 ''.concat("anonymous@",clientIp),
                 "anonymous",
                 "access_token",
                 "false"
             ];
+            session = uuidv4();
+            anonymous_session[session] = anonymous_user;
+
             // spoof the request to include the new session cookie as well?
             req.cookies.session = res.cookie("session", session, {
                 domain: req.hostname //require explicit domain set to work with subdomains
             });
         }
-        logger.debug('Session: ', session);
+
+        logger.debug('Session Found/Created: ', session);
 
         next();
     };
