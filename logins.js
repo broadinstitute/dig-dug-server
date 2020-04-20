@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/v4');
+const uuidv4 = require('uuid').v4;
 const log4js = require("log4js");
 const mysql = require('mysql2/promise');
 const secrets = require('./secrets');
@@ -114,7 +114,9 @@ const getOrCreateSession = function (req, res, next) {
 
         let session = false;
         if (req.cookies) {
-            session = req.cookies.session;
+            if(req.cookies._ga) {
+                session = req.cookies._ga;
+            }
         }
 
         if (session) {
@@ -133,7 +135,9 @@ const getOrCreateSession = function (req, res, next) {
             anonymous_session[session] = anonymous_user;
 
             // spoof the request to include the new session cookie as well?
-            req.cookies.session = res.cookie("session", session, {
+            req.cookies.session =
+                req.cookies.session =
+                    req.cookies._ga = res.cookie("_ga", session, {
                 domain: req.hostname //require explicit domain set to work with subdomains
             });
         }

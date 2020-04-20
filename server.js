@@ -99,7 +99,15 @@ function start(config) {
      */
     let ua_id = config.auth.google.UAId;
     if (ua_id) {
-        app.use(ExpressGA(ua_id));
+        app.use(
+            ExpressGA(
+                {
+                    uaCode: ua_id,
+                    cookieName: '_ga',
+                }
+
+            )
+        );
     }
 
     // express settings
