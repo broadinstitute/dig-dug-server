@@ -49,7 +49,7 @@ function create_routes(config, app) {
 }
 
 function logOut(req, res) {
-    res.clearCookie("session", { domain: getDomain(req.hostname) });
+    res.clearCookie("_ga", { domain: getDomain(req.hostname) });
     res.redirect("/");
 }
 

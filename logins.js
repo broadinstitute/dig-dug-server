@@ -115,10 +115,6 @@ const captureClientIp = function (req, res, next) {
 // middleware that creates an anonymous session when no registered user session is seen
 const getOrCreateSession = function (req, res, next) {
 
-        logger.debug("Request Headers:\n", JSON.stringify(req.headers));
-        logger.debug('Request Type:', req.method);
-        logger.debug('Cookies:', req.cookies);
-
         clientIp = req.headers['x-forwarded-for'];
 
         let session = false;
@@ -145,9 +141,7 @@ const getOrCreateSession = function (req, res, next) {
             anonymous_session[session] = anonymous_user;
 
             // spoof the request to include the new session cookie as well?
-            req.cookies.session =
-                req.cookies.session =
-                    req.cookies._ga = res.cookie("_ga", session, {
+            res.cookie("_ga", session, {
                 domain: req.hostname //require explicit domain set to work with subdomains
             });
 
