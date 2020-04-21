@@ -74,6 +74,7 @@ function validateConfig(config) {
 
 //start function
 function start(config) {
+
     // setup logging
     enable_logging(config);
 
@@ -88,9 +89,6 @@ function start(config) {
 
     // express plugins
     app.use(cookieParser());
-
-    // Elaborated session management
-    app.use(logins.getOrCreateSession);
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty
@@ -109,6 +107,9 @@ function start(config) {
             )
         );
     }
+
+    // Elaborated session management
+    app.use(logins.getOrCreateSession);
 
     // express settings
     app.set("views", path.join(__dirname, "views"));

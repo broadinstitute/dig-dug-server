@@ -120,7 +120,7 @@ const getOrCreateSession = function (req, res, next) {
         }
 
         if (session) {
-            logger.debug("Session cookie found!");
+            logger.debug("Session cookie found: ", session);
         } else {
             logger.debug("Creating new anonymous session?");
 
@@ -131,6 +131,7 @@ const getOrCreateSession = function (req, res, next) {
                 "access_token",
                 "false"
             ];
+
             session = uuidv4();
             anonymous_session[session] = anonymous_user;
 
@@ -140,9 +141,9 @@ const getOrCreateSession = function (req, res, next) {
                     req.cookies._ga = res.cookie("_ga", session, {
                 domain: req.hostname //require explicit domain set to work with subdomains
             });
-        }
 
-        logger.debug('Session Found/Created: ', session);
+            logger.debug('Anonymous session created: ', session, "with user '",anonymous_user,"'");
+        }
 
         next();
     };
