@@ -112,6 +112,8 @@ const captureClientIp = function (req, res, next) {
     next();
 }
 
+const cookieName = "session";
+
 // middleware that creates an anonymous session when no registered user session is seen
 const getOrCreateSession = function (req, res, next) {
 
@@ -119,8 +121,8 @@ const getOrCreateSession = function (req, res, next) {
 
         let session = false;
         if (req.cookies) {
-            if(req.cookies._ga) {
-                session = req.cookies._ga;
+            if(req.cookies[cookieName]) {
+                session = req.cookies[cookieName];
             }
         }
 
@@ -141,7 +143,7 @@ const getOrCreateSession = function (req, res, next) {
             anonymous_session[session] = anonymous_user;
 
             // spoof the request to include the new session cookie as well?
-            res.cookie("_ga", session, {
+            res.cookie(cookieName, session, {
                 domain: req.hostname //require explicit domain set to work with subdomains
             });
 
@@ -155,6 +157,7 @@ module.exports = {
     connectToDatabase,
     createSession,
     getSession,
+    cookieName,
     captureClientIp,
     getOrCreateSession,
 };

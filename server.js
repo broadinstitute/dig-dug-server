@@ -49,7 +49,7 @@ function create_routes(config, app) {
 }
 
 function logOut(req, res) {
-    res.clearCookie("_ga", { domain: getDomain(req.hostname) });
+    res.clearCookie(logins.cookieName, { domain: getDomain(req.hostname) });
     res.redirect("/");
 }
 
@@ -104,7 +104,7 @@ function start(config) {
             ExpressGA(
                 {
                     uaCode: ua_id,
-                    cookieName: '_ga',
+                    // default GA cookie '_ga' assumed
                 }
 
             )
