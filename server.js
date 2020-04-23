@@ -92,8 +92,13 @@ function start(config) {
     // express plugins
     app.use(cookieParser());
 
+
     // Elaborated session management
     app.use(logins.captureClientIp);
+
+    // Elaborated session management
+    // TODO: may not need this if one uses the express-session management?
+    // app.use(logins.captureSession);
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty
