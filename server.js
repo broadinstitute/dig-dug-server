@@ -1,4 +1,3 @@
-
 const ExpressGA = require("express-universal-analytics")
 const express = require("express");
 const express_session = require('express-session')
@@ -15,7 +14,7 @@ function enable_logging(config) {
     let logfile = config.log;
     let type = "file";
 
-    if (logfile == "stdout") {
+    if (logfile === "stdout") {
         type = logfile;
         logfile = undefined;
     }
@@ -89,12 +88,32 @@ function start(config) {
     let port = config.port || 80;
     let app = express();
 
+    // technically this is optional, but logins won't work if it fails
+    // RMB: moved the database connection method up here
+    // in advance of the express_session initialisation?
+    // TODO: modify the logins database to apply it to the express-session
+    logins.connectToDatabase(config);
+
+    // Use the session middleware
+    app.use(
+        express_session(
+            {
+                secret: config.session.secret,
+                resave: false,
+                saveUninitialized: false,
+                cookie: {
+                    maxAge: config.session.cookie.maxAge,
+
+
+                },
+            })
+    );
+
     // express plugins
     app.use(cookieParser());
 
-
     // Elaborated session management
-    app.use(logins.captureClientIp);
+    app.use(logins.captureClientIp());
 
     // Elaborated session management
     // TODO: may not need this if one uses the express-session management?
@@ -118,8 +137,9 @@ function start(config) {
         );
     }
 
-    // Elaborated session management
-    app.use(logins.getOrCreateSession);
+    // (Re-)set the user identifier for Google Analytics
+    // TODO: may need to modify this if one uses the express-session management?
+    // app.use(logins.setUserId);
 
     // express settings
     app.set("views", path.join(__dirname, "views"));
@@ -130,9 +150,6 @@ function start(config) {
 
     // google auth
     google.useConfig(config);
-
-    // technically this is optional, but logins won't work if it fails
-    logins.connectToDatabase(config);
 
     // get metadata before starting server
     app.listen(port, () => logger.info(`Server started on port ${port}...`));
