@@ -97,19 +97,29 @@ async function getSession(session) {
     return rows[0];
 }
 
-// middleware to capture the client IP address
-const captureClientIp = function (req, res, next) {
+/**
+ * Set x-forwarded-for header with inferred client IP, if not already set
+ *
+ * @return {Function}
+ * @public
+ */
+function captureClientIp() {
+    return function (req, res, next) {
 
-    let fullClientIp = requestIp.getClientIp(req);
-    logger.debug('fullClientIp:', fullClientIp);
-    let clientIpPart = fullClientIp.split(':');
-    logger.debug('clientIpPart:', clientIpPart);
-    let clientIp = clientIpPart[clientIpPart.length - 1]
-    logger.debug('Client IP:', clientIp);
+        // set x-forwarded-for if not exists
+        if (!req.headers['x-forwarded-for']) {
 
-    req.headers['x-forwarded-for'] = (clientIp==='1' ? '127.0.0.1' : clientIp);
+            let fullClientIp = requestIp.getClientIp(req);
+            logger.debug('fullClientIp:', fullClientIp);
+            let clientIpPart = fullClientIp.split(':');
+            logger.debug('clientIpPart:', clientIpPart);
+            let clientIp = clientIpPart[clientIpPart.length - 1]
+            logger.debug('Client IP:', clientIp);
 
-    next();
+            req.headers['x-forwarded-for'] = (clientIp === '1' ? '127.0.0.1' : clientIp);
+        }
+        next();
+    };
 }
 
 const cookieName = "session";
