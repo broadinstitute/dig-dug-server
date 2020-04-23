@@ -1,6 +1,6 @@
-
 const ExpressGA = require("express-universal-analytics")
 const express = require("express");
+const express_session = require('express-session')
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const log4js = require("log4js");
@@ -13,7 +13,7 @@ function enable_logging(config) {
     let logfile = config.log;
     let type = "file";
 
-    if (logfile == "stdout") {
+    if (logfile === "stdout") {
         type = logfile;
         logfile = undefined;
     }
@@ -49,7 +49,7 @@ function create_routes(config, app) {
 }
 
 function logOut(req, res) {
-    res.clearCookie("_ga", { domain: getDomain(req.hostname) });
+    res.clearCookie(logins.cookieName, { domain: getDomain(req.hostname) });
     res.redirect("/");
 }
 
@@ -87,11 +87,26 @@ function start(config) {
     let port = config.port || 80;
     let app = express();
 
+    // Use the session middleware
+    //app.use(
+    //    express_session(
+    //        {
+    //            secret: config.session.secret,
+    //            cookie: {
+    //                maxAge: config.session.cookie.maxAge,
+    //            }
+    //        })
+    //);
+
     // express plugins
     app.use(cookieParser());
 
     // Elaborated session management
     app.use(logins.captureClientIp);
+
+    // Elaborated session management
+    // TODO: may not need this if one uses the express-session management?
+    // app.use(logins.captureSession);
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty
@@ -104,15 +119,16 @@ function start(config) {
             ExpressGA(
                 {
                     uaCode: ua_id,
-                    cookieName: '_ga',
+                    // assume the default _ga cookie
                 }
 
             )
         );
     }
 
-    // Elaborated session management
-    app.use(logins.getOrCreateSession);
+    // (Re-)set the user identifier for Google Analytics
+    // TODO: may need to modify this if one uses the express-session management?
+    // app.use(logins.setUserId);
 
     // express settings
     app.set("views", path.join(__dirname, "views"));

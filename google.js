@@ -87,7 +87,7 @@ const oauth2callback = function(req, res, next) {
                 logins.createSession(user.email, user.name, user.access_token)
             )
             .then(session => {
-                res.cookie("_ga", session, {
+                res.cookie(logins.cookieName, session, {
                     domain: req.hostname //require explicit domain set to work with subdomains
                 });
                 res.redirect(req.cookies.whereAmI || "/"); //redirect back or home

@@ -1,6 +1,10 @@
 portal: T2D
 log: stdout
 port: 8090
+session:
+  secret: "D!@bet!cP0rt@1"
+  cookie:
+    maxAge: 3600000 # one hour, in milliseconds
 auth:
   google:
     # To track the site using Google Analytics, a non-empty GA Property UA identifier needs to be provided here
