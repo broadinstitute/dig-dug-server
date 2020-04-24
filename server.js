@@ -94,7 +94,8 @@ function start(config) {
     // TODO: modify the logins database to apply it to the express-session
     logins.connectToDatabase(config);
 
-    // Use the session middleware
+    // Deploy the Express session middleware
+    // TODO: need review on how it is being used, and perhaps adapt to Portal session management(?)
     app.use(
         express_session(
             {
@@ -138,10 +139,6 @@ function start(config) {
             )
         );
     }
-
-    // (Re-)set the user identifier for Google Analytics
-    // TODO: may need to modify this if one uses the express-session management?
-    //app.use(logins.setUserId());
 
     // express settings
     app.set("views", path.join(__dirname, "views"));

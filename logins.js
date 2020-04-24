@@ -78,13 +78,13 @@ async function getSession(session) {
 
     // TODO: might be obsolete given that we are now using express-session?
     if(session in anonymous_session) {
-        logger.debug("Anonymous session cookie found!");
+        //logger.debug("Anonymous session cookie found!");
         return anonymous_session[session];
     }
 
     if (connectionPool) {
 
-        logger.debug("Checking for registered user's session cookie!");
+        //logger.debug("Checking for registered user's session cookie!");
 
         let select = `
         SELECT email, name, access_token, admin FROM logins
@@ -117,12 +117,13 @@ function captureClientIp() {
         if (!req.headers['x-forwarded-for']) {
 
             let fullClientIp = requestIp.getClientIp(req);
-            logger.debug('fullClientIp:', fullClientIp);
+            //logger.debug('fullClientIp:', fullClientIp);
             let clientIpPart = fullClientIp.split(':');
-            logger.debug('clientIpPart:', clientIpPart);
+            //logger.debug('clientIpPart:', clientIpPart);
             let clientIp = clientIpPart[clientIpPart.length - 1]
-            logger.debug('Client IP:', clientIp);
+            //logger.debug('Client IP:', clientIp);
 
+            //logger.debug('Headers:', req.headers);
             req.headers['x-forwarded-for'] = (clientIp === '1' ? '127.0.0.1' : clientIp);
         }
         next();
@@ -130,7 +131,8 @@ function captureClientIp() {
 }
 
 /**
- * Create an anonymous session when no registered user session cookie is detected
+ * Create an anonymous portal session ID when
+ * no registered user session cookie is detected
  *
  * @return {Function}
  * @public
@@ -146,10 +148,9 @@ function captureSession() {
                 session = req.cookies[cookieName];
         }
 
-        if (session) {
-            logger.debug("Session cookie found: ", session);
-        } else {
-            logger.debug("Creating new anonymous session?");
+        if (!session) {
+            
+            //logger.debug("Creating new anonymous session?");
 
             let clientIp = req.headers['x-forwarded-for'];
 
@@ -169,69 +170,13 @@ function captureSession() {
                 domain: req.hostname //require explicit domain set to work with subdomains
             });
 
-            logger.debug('Anonymous session created: ', session, "with user '", anonymous_user, "'");
+            //logger.debug('Anonymous session created: ', session, "with user '", anonymous_user, "'");
         }
 
         next();
     };
 }
 
-/**
- * Attempt to set the user identifier for Google Analytics
- *
- * @return {Function}
- * @public
- */
-function setUserId() {
-    return async function (req, res, next) {
-
-        let session = '';
-
-        if (req.cookies) {
-            if(req.cookies[cookieName]) {
-                session = req.cookies[cookieName];
-            }
-        }
-
-        if (!session) {
-            // could be a new anonymous public user - retrieve from the request cookie pool?
-            if (req.new_anonymous_session) {
-                session = req.new_anonymous_session;
-            }
-        }
-
-        if (session) {
-
-            let userId = '';
-
-            try {
-
-                let userSession = await getSession(session);
-
-                if (userSession) {
-                    // get the user id a.k.a. email address
-                    // TODO: need to "anonymomize" this but keep it globally unique, maybe using some kind of hash?
-                    // userId = userSession[0]; // WRONG! Violates Google Analytics UserID policy?
-                    // TODO: perhaps need to store a new field in the dig-dug-server
-                    userId = session;  // temporary hack ... not so universal across devices and sessions but...
-
-                } else {
-                    logger.debug("No registered user session unavailable for session ID '",session,"'?");
-                    userId = session;  // temporary hack ... not so universal across devices and sessions but...
-                }
-
-                // if found, set it to visitor
-                logger.debug("setUserId(): setting GA Visitor Uid to: ", userId);
-                req.visitor.setUid(userId);
-            }
-            catch(err) {
-                logger.debug("setUserId() error: getSession() exception?");
-            }
-        }
-
-        next();
-    };
-}
 
 module.exports = {
     connectToDatabase,
@@ -240,5 +185,4 @@ module.exports = {
     cookieName,
     captureClientIp,
     captureSession,
-    setUserId,
 };
