@@ -142,11 +142,8 @@ function captureSession() {
 
         req.new_anonymous_session = false;
 
-        if (req.cookies) {
-            if (req.cookies[cookieName]) {
-
+        if (req.cookies && req.cookies[cookieName]) {
                 session = req.cookies[cookieName];
-            }
         }
 
         if (session) {

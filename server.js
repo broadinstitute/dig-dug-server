@@ -131,6 +131,8 @@ function start(config) {
                 {
                     uaCode: ua_id,
                     // default GA cookie '_ga' assumed
+                    // extract user id from request
+                    reqToUserId: (req) => req.cookies && req.cookies[logins.cookieName],
                 }
 
             )
@@ -139,7 +141,7 @@ function start(config) {
 
     // (Re-)set the user identifier for Google Analytics
     // TODO: may need to modify this if one uses the express-session management?
-    app.use(logins.setUserId());
+    //app.use(logins.setUserId());
 
     // express settings
     app.set("views", path.join(__dirname, "views"));
