@@ -117,7 +117,7 @@ function start(config) {
 
     // Elaborated session management
     // TODO: may not need this if one uses the express-session management?
-    // app.use(logins.captureSession);
+    app.use(logins.captureSession());
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty
@@ -139,7 +139,7 @@ function start(config) {
 
     // (Re-)set the user identifier for Google Analytics
     // TODO: may need to modify this if one uses the express-session management?
-    // app.use(logins.setUserId);
+    app.use(logins.setUserId());
 
     // express settings
     app.set("views", path.join(__dirname, "views"));

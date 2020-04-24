@@ -77,10 +77,10 @@ const anonymous_session = {};
 async function getSession(session) {
 
     // TODO: might be obsolete given that we are now using express-session?
-    //if(session in anonymous_session) {
-    //    logger.debug("Anonymous session cookie found!");
-    //    return anonymous_session[session];
-    //}
+    if(session in anonymous_session) {
+        logger.debug("Anonymous session cookie found!");
+        return anonymous_session[session];
+    }
 
     if (connectionPool) {
 
