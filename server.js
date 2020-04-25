@@ -96,6 +96,9 @@ function eventLog(req, res) {
         value = req.query['value'];
     }
 
+    logger.debug("Google Analytic event logged for '".concat(
+        host,"'[Action:'",action,"', Category:'",category,"', Label:'",label,"=",value,"']"));
+
     req.visitor.event({
         dp: req.originalUrl,
         ea: action,
