@@ -100,6 +100,9 @@ function eventLog(req, res) {
     logger.debug("Google Analytic event logged for '".concat(
         host,"'[Action:'",action,"', Category:'",category,"', Label:'",label,"=",value,"']"));
 
+    // set it to visitor
+    req.visitor.setUid(logins.getUserId(req))
+
     req.visitor.event({
         dp: req.originalUrl,
         ea: action,
@@ -122,6 +125,7 @@ function validateConfig(config) {
 
     return valid;
 }
+
 
 //start function
 function start(config) {
@@ -183,7 +187,7 @@ function start(config) {
                     uaCode: ua_id,
                     // default GA cookie '_ga' assumed
                     // extract user id from request
-                    reqToUserId: (req) => req.cookies && req.cookies[logins.cookieName],
+                    reqToUserId: logins.getUserId,
                 }
 
             )

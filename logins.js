@@ -177,6 +177,12 @@ function captureSession() {
     };
 }
 
+// tries to retrieve the current user id a.k.a. the session cookie
+const getUserId = function(req) {
+    let user = req.cookies && req.cookies[cookieName];
+    return user? user: 0; // shouldn't happen but set userid to zero if not found?
+}
+
 
 module.exports = {
     connectToDatabase,
@@ -185,4 +191,5 @@ module.exports = {
     cookieName,
     captureClientIp,
     captureSession,
+    getUserId,
 };
