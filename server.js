@@ -45,6 +45,9 @@ function create_routes(config, app) {
     app.get("/logout", logOut);
     app.get("/oauth2callback", google.oauth2callback);
 
+    // Google Analytics event callback
+    app.get("/eventlog", eventLog);
+
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
 }
@@ -54,6 +57,7 @@ function logOut(req, res) {
     res.redirect("/");
 }
 
+
 //get domain from hostname
 function getDomain(host) {
     let parts = host.split(".");
@@ -61,6 +65,48 @@ function getDomain(host) {
         return parts[parts.length - 2] + "." + parts[parts.length - 1];
     } else return host;
 }
+
+
+/**
+ * Event Log web service endpoint for Google Analytics reporting
+ *
+ * @param {Request} [req]
+ * @param {Response} [res]
+ * @return {Send}
+ * @public
+ */
+function eventLog(req, res) {
+
+    let host = getDomain(req.headers['host']);
+    let action = 'visit';
+    let category = 'route';
+    let label = 'sample';
+    let value = '1';
+
+    if (req.query['action']) {
+        action = req.query['action'];
+    }
+    if (req.query['category']) {
+        category = req.query['category'];
+    }
+    if (req.query['label']) {
+        label = req.query['label'];
+    }
+    if (req.query['value']) {
+        value = req.query['value'];
+    }
+
+    req.visitor.event({
+        dp: req.originalUrl,
+        ea: action,
+        ec: category,
+        el: label,
+        ev: value,
+    }).send();
+
+    res.send(host.concat(" '",action,"' event handled!"));
+}
+
 
 function validateConfig(config) {
     let valid = true;

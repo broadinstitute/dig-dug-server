@@ -149,7 +149,7 @@ function captureSession() {
         }
 
         if (!session) {
-            
+
             //logger.debug("Creating new anonymous session?");
 
             let clientIp = req.headers['x-forwarded-for'];
