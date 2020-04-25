@@ -45,7 +45,7 @@ function create_routes(config, app) {
     app.get("/logout", logOut);
     app.get("/oauth2callback", google.oauth2callback);
 
-    // Google Analytics event callback
+    // Google Analytics event callback (see eventLog function below for further details)
     app.get("/eventlog", eventLog);
 
     // main distribution/resource folder
@@ -68,7 +68,8 @@ function getDomain(host) {
 
 
 /**
- * Event Log web service endpoint for Google Analytics reporting
+ * Event Log web service endpoint for Google Analytics reporting.
+ * Endpoint path is of form '/eventlog?action=click&category=gwas&label=show_variants&value=true'
  *
  * @param {Request} [req]
  * @param {Response} [res]
