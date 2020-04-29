@@ -96,7 +96,7 @@ Hosts file locations are listed below, and will likely need admin privilege/sudo
 
 ## Google Analytics
 
-To activate Google Analytics in the application, with a `Tracking ID` of format "UA-#########-#", corresponding to a `Property` within a registered [Google Analytics](https://analytics.google.com/) needs to be obtained, then inserted into as the value of the `config.auth.google.UAId` tag in a `config_local.yml` file to be used to override the empty corresponding tag within the default config.yml file during server start up (as noted below).
+To activate Google Analytics in the application, with a `Tracking ID` of format "UA-#########-#", corresponding to a `Property` within a registered [Google Analytics](https://support.google.com/analytics/answer/1008015?hl=en) needs to be obtained, then inserted into as the value of the `config.auth.google.UAId` tag in a `config_local.yml` file to be used to override the empty corresponding tag within the default config.yml file during server start up (as noted below).
 
 # Installing and Running the Server
 
