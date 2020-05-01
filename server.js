@@ -129,7 +129,7 @@ function start(config) {
     app.use(
         express_session(
             {
-                secret: config.session.secret,
+                secret: config.session.secret || 'dummy-session-secret',
                 resave: false,
                 saveUninitialized: false,
                 cookie: {

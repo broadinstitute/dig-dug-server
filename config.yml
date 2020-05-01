@@ -2,7 +2,7 @@ portal: T2D
 log: stdout
 port: 8090
 session:
-  secret: "D!@bet!cP0rt@1"
+  secret: ""
   cookie:
     maxAge: 3600000 # one hour, in milliseconds
 auth:
