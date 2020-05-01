@@ -77,41 +77,17 @@ function getDomain(host) {
  * @public
  */
 function eventLog(req, res) {
-
-    let host = getDomain(req.headers['host']);
-    let action = 'visit';
-    let category = 'route';
-    let label = 'sample';
-    let value = '1';
-
-    if (req.query['action']) {
-        action = req.query['action'];
-    }
-    if (req.query['category']) {
-        category = req.query['category'];
-    }
-    if (req.query['label']) {
-        label = req.query['label'];
-    }
-    if (req.query['value']) {
-        value = req.query['value'];
-    }
-
-    logger.debug("Google Analytic event logged for '".concat(
-        host,"'[Action:'",action,"', Category:'",category,"', Label:'",label,"=",value,"']"));
-
-    // set it to visitor
     req.visitor.setUid(logins.getUserId(req))
 
     req.visitor.event({
         dp: req.originalUrl,
-        ea: action,
-        ec: category,
-        el: label,
-        ev: value,
+        ea: req.query.action || 'visit',
+        ec: req.query.category || 'route',
+        el: req.query.label || 'sample',
+        ev: req.query.value || '1',
     }).send();
 
-    res.send(host.concat(" '",action,"' event handled!"));
+    res.send('ok');
 }
 
 
@@ -168,11 +144,11 @@ function start(config) {
     app.use(cookieParser());
 
     // Elaborated session management
-    app.use(logins.captureClientIp());
+    app.use(logins.captureClientIp);
 
     // Elaborated session management
     // TODO: may not need this if one uses the express-session management?
-    app.use(logins.captureSession());
+    app.use(logins.captureSession);
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty

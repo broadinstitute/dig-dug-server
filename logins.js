@@ -77,7 +77,7 @@ const anonymous_session = {};
 async function getSession(session) {
 
     // TODO: might be obsolete given that we are now using express-session?
-    if(session in anonymous_session) {
+    if (session in anonymous_session) {
         //logger.debug("Anonymous session cookie found!");
         return anonymous_session[session];
     }
@@ -110,24 +110,22 @@ async function getSession(session) {
  * @return {Function}
  * @public
  */
-function captureClientIp() {
-    return function (req, res, next) {
+function captureClientIp(req, res, next) {
 
-        // set x-forwarded-for if not exists
-        if (!req.headers['x-forwarded-for']) {
+    // set x-forwarded-for if not exists
+    if (!req.headers['x-forwarded-for']) {
 
-            let fullClientIp = requestIp.getClientIp(req);
-            //logger.debug('fullClientIp:', fullClientIp);
-            let clientIpPart = fullClientIp.split(':');
-            //logger.debug('clientIpPart:', clientIpPart);
-            let clientIp = clientIpPart[clientIpPart.length - 1]
-            //logger.debug('Client IP:', clientIp);
+        let fullClientIp = requestIp.getClientIp(req);
+        //logger.debug('fullClientIp:', fullClientIp);
+        let clientIpPart = fullClientIp.split(':');
+        //logger.debug('clientIpPart:', clientIpPart);
+        let clientIp = clientIpPart[clientIpPart.length - 1]
+        //logger.debug('Client IP:', clientIp);
 
-            //logger.debug('Headers:', req.headers);
-            req.headers['x-forwarded-for'] = (clientIp === '1' ? '127.0.0.1' : clientIp);
-        }
-        next();
-    };
+        //logger.debug('Headers:', req.headers);
+        req.headers['x-forwarded-for'] = (clientIp === '1' ? '127.0.0.1' : clientIp);
+    }
+    next();
 }
 
 /**
@@ -137,50 +135,49 @@ function captureClientIp() {
  * @return {Function}
  * @public
  */
-function captureSession() {
-    return function (req, res, next) {
+function captureSession(req, res, next) {
 
-        let session = false;
+    let session = false;
 
-        req.new_anonymous_session = false;
+    req.new_anonymous_session = false;
 
-        if (req.cookies && req.cookies[cookieName]) {
-                session = req.cookies[cookieName];
-        }
+    if (req.cookies && req.cookies[cookieName]) {
+        session = req.cookies[cookieName];
+    }
 
-        if (!session) {
+    if (!session) {
 
-            //logger.debug("Creating new anonymous session?");
+        //logger.debug("Creating new anonymous session?");
 
-            let clientIp = req.headers['x-forwarded-for'];
+        let clientIp = req.headers['x-forwarded-for'];
 
-            // Attempt to create a synthetic but functional session object?
-            let anonymous_user = [
-                ''.concat("anonymous@", clientIp),
-                "anonymous",
-                "access_token",
-                "false"
-            ];
+        // Attempt to create a synthetic but functional session object?
+        let anonymous_user = [
+            ''.concat("anonymous@", clientIp),
+            "anonymous",
+            "access_token",
+            "false"
+        ];
 
-            req.new_anonymous_session = session = uuidv4();
-            anonymous_session[session] = anonymous_user;
+        req.new_anonymous_session = session = uuidv4();
+        anonymous_session[session] = anonymous_user;
 
-            // set an anonymous session cookie?
-            res.cookie(cookieName, session, {
-                domain: req.hostname //require explicit domain set to work with subdomains
-            });
+        // set an anonymous session cookie?
+        res.cookie(cookieName, session, {
+            domain: req.hostname //require explicit domain set to work with subdomains
+        });
 
-            //logger.debug('Anonymous session created: ', session, "with user '", anonymous_user, "'");
-        }
+        //logger.debug('Anonymous session created: ', session, "with user '", anonymous_user, "'");
+    }
 
-        next();
-    };
+    next();
+
 }
 
 // tries to retrieve the current user id a.k.a. the session cookie
-const getUserId = function(req) {
+const getUserId = function (req) {
     let user = req.cookies && req.cookies[cookieName];
-    return user? user: 0; // shouldn't happen but set userid to zero if not found?
+    return user ? user : 0; // shouldn't happen but set userid to zero if not found?
 }
 
 
