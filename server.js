@@ -71,6 +71,8 @@ function getDomain(host) {
  * Event Log web service endpoint for Google Analytics reporting.
  * Endpoint path is of form '/eventlog?action=click&category=gwas&label=show_variants&value=true'
  *
+ * TODO: this function should capture the front end portal page context of the event; use instead of the req.originalUrl
+ *
  * @param {Request} [req]
  * @param {Response} [res]
  * @return {Send}
