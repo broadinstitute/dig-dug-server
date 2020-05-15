@@ -2,11 +2,14 @@ const ExpressGA = require("express-universal-analytics")
 const express = require("express");
 const express_session = require('express-session')
 
+const getRepoInfo = require('git-repo-info');
+
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const log4js = require("log4js");
 const google = require("./google");
 const logins = require("./logins");
+
 
 let logger = undefined;
 
@@ -46,7 +49,7 @@ function create_routes(config, app) {
     app.get("/oauth2callback", google.oauth2callback);
 
     // Google Analytics event callback (see eventLog function below for further details)
-    app.get("/eventlog", eventLog);
+    app.get("/eventlog", eventLog(config.content.dist));
 
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
@@ -78,20 +81,48 @@ function getDomain(host) {
  * @return {Send}
  * @public
  */
-function eventLog(req, res) {
-    req.visitor.setUid(logins.getUserId(req))
-
-    req.visitor.event({
-        dp: req.originalUrl,
-        ea: req.query.action || 'visit',
-        ec: req.query.category || 'route',
-        el: req.query.label || 'sample',
-        ev: req.query.value || '1',
-    }).send();
-
-    res.send('ok');
+function eventLog (dist) {
+    const git_portal_version = getRepoInfo(path.dirname(dist));
+    const git_server_version = getRepoInfo();
+    return (req, res) =>  {
+        let analytics_event = {
+            av: [git_portal_version.branch, git_portal_version.sha].join(':'),
+            dp: req.originalUrl,  // 'document path' (page location)
+            ea: req.query.action || 'visit',  // event action
+            ec: req.query.category || 'route',  // event category
+            el: req.query.label || 'sample',  // event label
+            ev: req.query.value || 1,  // event value (int)
+        };
+        console.log(git_portal_version.sha, typeof git_portal_version.sha);
+        req.visitor.setUid(logins.getUserId(req))
+        req.visitor.event({
+            ea: req.query.action,
+            ec: req.query.category,
+            el: 'test label',
+            dp: req.originalUrl,
+            dr: req.get('Referer'),
+            dt: git_portal_version.sha,
+            ua: req.headers['user-agent'],
+            uip: (req.connection.remoteAddress
+                || req.socket.remoteAddress
+                || req.connection.remoteAddress
+                || req.headers['x-forwarded-for'].split(',').pop()),
+        }).send();
+        res.send('ok');
+    }
 }
 
+
+function errorLog(dist) {
+    console.log('errorlog')
+    return (req, res) => {
+        req.visitor.setUid(logins.getUserId(req))
+        req.visitor.exception({
+
+        }).send();
+        res.send('ok');
+    }
+}
 
 function validateConfig(config) {
     let valid = true;
@@ -166,6 +197,7 @@ function start(config) {
                     // default GA cookie '_ga' assumed
                     // extract user id from request
                     reqToUserId: logins.getUserId,
+                    autoTrackPages: false,
                 }
 
             )
