@@ -82,31 +82,30 @@ function getDomain(host) {
  * @public
  */
 function eventLog (dist) {
-    const git_portal_version = getRepoInfo(path.dirname(dist));
-    const git_server_version = getRepoInfo();
+    const git_server_info = getRepoInfo();
+    const git_portal_info = getRepoInfo(path.dirname(dist));
+    const git_portal_version = ['portal', git_portal_info.branch, git_portal_info.sha.substring(0, 7)].join(':');
+    const git_server_version = ['server', git_server_info.branch, git_server_info.sha.substring(0, 7)].join(':');
+    const applicationVersion = [
+        git_portal_version,
+        git_server_version
+    ].join()
+
     return (req, res) =>  {
-        let analytics_event = {
-            av: [git_portal_version.branch, git_portal_version.sha].join(':'),
-            dp: req.originalUrl,  // 'document path' (page location)
-            ea: req.query.action || 'visit',  // event action
-            ec: req.query.category || 'route',  // event category
-            el: req.query.label || 'sample',  // event label
-            ev: req.query.value || 1,  // event value (int)
-        };
-        console.log(git_portal_version.sha, typeof git_portal_version.sha);
         req.visitor.setUid(logins.getUserId(req))
+        // custom dimensions
+        // see the analytics account for their descriptions
+        // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
+        req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
+        req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
         req.visitor.event({
-            ea: req.query.action,
             ec: req.query.category,
-            el: 'test label',
-            dp: req.originalUrl,
-            dr: req.get('Referer'),
-            dt: git_portal_version.sha,
-            ua: req.headers['user-agent'],
-            uip: (req.connection.remoteAddress
-                || req.socket.remoteAddress
-                || req.connection.remoteAddress
-                || req.headers['x-forwarded-for'].split(',').pop()),
+            ea: req.query.action,
+            el: req.query.label+';'+git_portal_version+';'+git_server_version,
+            ev: 0,
+            dp: req.query.page,
+            "cd1": git_portal_version,
+            "cd2": git_server_version,
         }).send();
         res.send('ok');
     }
