@@ -98,14 +98,14 @@ function eventLog (dist) {
         // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
         req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
         req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
+
+        console.log(req.query.label+';'+git_portal_version+';'+git_server_version)
         req.visitor.event({
             ec: req.query.category,
             ea: req.query.action,
             el: req.query.label+';'+git_portal_version+';'+git_server_version,
             ev: 0,
             dp: req.query.page,
-            "cd1": git_portal_version,
-            "cd2": git_server_version,
         }).send();
         res.send('ok');
     }
