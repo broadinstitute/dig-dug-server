@@ -99,7 +99,6 @@ function eventLog (dist) {
         req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
         req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
 
-        console.log(req.query.label+';'+git_portal_version+';'+git_server_version)
         req.visitor.event({
             ec: req.query.category,
             ea: req.query.action,
