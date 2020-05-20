@@ -7,8 +7,6 @@ session:
     maxAge: 3600000 # one hour, in milliseconds
 auth:
   google:
-    # To track the site using Google Analytics, a non-empty GA Property UA identifier needs to be provided here
-    UAId: "UA-165966431-1"
     secretId: google-oauth-portal
     callbackHost: localhost.com:8090
 content:

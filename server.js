@@ -43,13 +43,19 @@ function enable_logging(config) {
 }
 
 function create_routes(config, app) {
+    const { git_portal_version, git_server_version } = gitConfig(config.content.dist);
+    const git_application_versions = [
+        git_portal_version,
+        git_server_version
+    ].join(';')
+
     // Google OAuth
     app.get("/login", google.logInLink);
     app.get("/logout", logOut);
     app.get("/oauth2callback", google.oauth2callback);
 
     // Google Analytics event callback (see eventLog function below for further details)
-    app.get("/eventlog", eventLog(config.content.dist));
+    app.get("/eventlog", eventLog(git_application_versions));
 
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
@@ -81,28 +87,19 @@ function getDomain(host) {
  * @return {Send}
  * @public
  */
-function eventLog (dist) {
-    const git_server_info = getRepoInfo();
-    const git_portal_info = getRepoInfo(path.dirname(dist));
-    const git_portal_version = ['portal', git_portal_info.branch, git_portal_info.sha.substring(0, 7)].join(':');
-    const git_server_version = ['server', git_server_info.branch, git_server_info.sha.substring(0, 7)].join(':');
-    const applicationVersion = [
-        git_portal_version,
-        git_server_version
-    ].join()
-
+function eventLog (git_application_version) {
     return (req, res) =>  {
         req.visitor.setUid(logins.getUserId(req))
         // custom dimensions
         // see the analytics account for their descriptions
         // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
-        req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
-        req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
+        // req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
+        // req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
 
         req.visitor.event({
             ec: req.query.category,
             ea: req.query.action,
-            el: req.query.label+';'+git_portal_version+';'+git_server_version,
+            el: req.query.label+';'+git_application_version,
             ev: 0,
             dp: req.query.page,
         }).send();
@@ -110,17 +107,6 @@ function eventLog (dist) {
     }
 }
 
-
-function errorLog(dist) {
-    console.log('errorlog')
-    return (req, res) => {
-        req.visitor.setUid(logins.getUserId(req))
-        req.visitor.exception({
-
-        }).send();
-        res.send('ok');
-    }
-}
 
 function validateConfig(config) {
     let valid = true;
@@ -133,6 +119,16 @@ function validateConfig(config) {
     return valid;
 }
 
+
+function gitConfig (dist) {
+    const git_server_info = getRepoInfo();
+    const git_portal_info = getRepoInfo(path.dirname(dist));
+    const git_portal_version = ['portal', git_portal_info.branch, git_portal_info.sha.substring(0, 7)].join(':');
+    const git_server_version = ['server', git_server_info.branch, git_server_info.sha.substring(0, 7)].join(':');
+    return {
+        git_portal_version, git_server_version
+    }
+}
 
 //start function
 function start(config) {
