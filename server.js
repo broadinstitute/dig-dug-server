@@ -148,12 +148,6 @@ function start(config) {
     // Elaborated session management
     app.use(logins.captureClientIp);
 
-    // Elaborated session management
-    // TODO: may not need this if one uses the express-session management?
-    // RMB June 19/2020: the purpose of captureSession() was to enable tracking of anonymous users in Google Analytics
-    // but the function sets the session cookie, which thus breaks the v-if conditional for /login in PageHeader.vue
-    // app.use(logins.captureSession);
-
     /*
      Will only insert middleware to process Google Analytics if a non-empty
      Google Analytics Property Tracking identifier of format "UA-#########-#"
