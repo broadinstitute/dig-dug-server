@@ -86,7 +86,7 @@ function eventLog(req, res) {
         ea: req.query.action || 'visit',
         ec: req.query.category || 'route',
         el: req.query.label || 'sample',
-        ev: req.query.value || '1',
+        ev: req.query.value || 1,
     }).send();
 
     res.send('ok');
