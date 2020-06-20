@@ -87,24 +87,18 @@ function getDomain(host) {
  * @return {Send}
  * @public
  */
-function eventLog (git_application_version) {
-    return (req, res) =>  {
-        req.visitor.setUid(logins.getUserId(req))
-        // custom dimensions
-        // see the analytics account for their descriptions
-        // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
-        // req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
-        // req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
+function eventLog(req, res) {
+    req.visitor.setUid(logins.getUserId(req))
 
-        req.visitor.event({
-            ec: req.query.category,
-            ea: req.query.action,
-            el: req.query.label+';'+git_application_version,
-            ev: 0,
-            dp: req.query.page,
-        }).send();
-        res.send('ok');
-    }
+    req.visitor.event({
+        dp: req.originalUrl,
+        ea: req.query.action || 'visit',
+        ec: req.query.category || 'route',
+        el: req.query.label || 'sample',
+        ev: req.query.value || 1,
+    }).send();
+
+    res.send('ok');
 }
 
 
@@ -120,7 +114,7 @@ function validateConfig(config) {
 }
 
 
-function gitConfig (dist) {
+function gitConfig(dist) {
     const git_server_info = getRepoInfo();
     const git_portal_info = getRepoInfo(path.dirname(dist));
     const git_portal_version = ['portal', git_portal_info.branch, git_portal_info.sha.substring(0, 7)].join(':');
@@ -172,10 +166,6 @@ function start(config) {
 
     // Elaborated session management
     app.use(logins.captureClientIp);
-
-    // Elaborated session management
-    // TODO: may not need this if one uses the express-session management?
-    app.use(logins.captureSession);
 
     /*
      Will only insert middleware to process Google Analytics if a non-empty
