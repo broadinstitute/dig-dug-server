@@ -70,17 +70,10 @@ async function insertSession(email, name, access_token) {
     return await connectionPool.execute(insert, [email, name, access_token]);
 }
 
-const anonymous_session = {};
 
 // lookup a session by email
 // TODO: might need to be revised given that we are now using express-session?
 async function getSession(session) {
-
-    // TODO: might be obsolete given that we are now using express-session?
-    if (session in anonymous_session) {
-        //logger.debug("Anonymous session cookie found!");
-        return anonymous_session[session];
-    }
 
     if (connectionPool) {
 
@@ -128,52 +121,6 @@ function captureClientIp(req, res, next) {
     next();
 }
 
-/**
- * Create an anonymous portal session ID when
- * no registered user session cookie is detected
- *
- * @return {Function}
- * @public
- */
-function captureSession(req, res, next) {
-
-    let session = false;
-
-    req.new_anonymous_session = false;
-
-    if (req.cookies && req.cookies[cookieName]) {
-        session = req.cookies[cookieName];
-    }
-
-    if (!session) {
-
-        //logger.debug("Creating new anonymous session?");
-
-        let clientIp = req.headers['x-forwarded-for'];
-
-        // Attempt to create a synthetic but functional session object?
-        let anonymous_user = [
-            ''.concat("anonymous@", clientIp),
-            "anonymous",
-            "access_token",
-            "false"
-        ];
-
-        req.new_anonymous_session = session = uuidv4();
-        anonymous_session[session] = anonymous_user;
-
-        // set an anonymous session cookie?
-        res.cookie(cookieName, session, {
-            domain: req.hostname //require explicit domain set to work with subdomains
-        });
-
-        //logger.debug('Anonymous session created: ', session, "with user '", anonymous_user, "'");
-    }
-
-    next();
-
-}
-
 // tries to retrieve the current user id a.k.a. the session cookie
 const getUserId = function (req) {
     let user = req.cookies && req.cookies[cookieName];
@@ -187,6 +134,5 @@ module.exports = {
     getSession,
     cookieName,
     captureClientIp,
-    captureSession,
     getUserId,
 };
