@@ -121,7 +121,7 @@ function validateConfig(config) {
 
 
 function gitConfig(dist) {
-    const git_server_info = getRepoInfo();
+    const git_server_info = getRepoInfo(__dirname);
     const git_portal_info = getRepoInfo(path.dirname(dist));
     const git_portal_version = ['portal', git_portal_info.branch, git_portal_info.sha.substring(0, 7)].join(':');
     const git_server_version = ['server', git_server_info.branch, git_server_info.sha.substring(0, 7)].join(':');
