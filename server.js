@@ -87,18 +87,24 @@ function getDomain(host) {
  * @return {Send}
  * @public
  */
-function eventLog(req, res) {
-    req.visitor.setUid(logins.getUserId(req))
+function eventLog(git_application_version) {
+    return (req, res) => {
+        req.visitor.setUid(logins.getUserId(req))
+        // custom dimensions
+        // see the analytics account for their descriptions
+        // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
+        // req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
+        // req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
 
-    req.visitor.event({
-        dp: req.originalUrl,
-        ea: req.query.action || 'visit',
-        ec: req.query.category || 'route',
-        el: req.query.label || 'sample',
-        ev: req.query.value || 1,
-    }).send();
-
-    res.send('ok');
+        req.visitor.event({
+            ec: req.query.category,
+            ea: req.query.action,
+            el: req.query.label + ';' + git_application_version,
+            ev: 0,
+            dp: req.query.page,
+        }).send();
+        res.send('ok');
+    }
 }
 
 
