@@ -69,3 +69,4 @@ config_local.yml
 .vscode/
 .vs/
 package-lock.json
+*.swp
