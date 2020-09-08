@@ -83,11 +83,12 @@ const oauth2callback = function(req, res, next) {
         next(new Error("No code provided"));
     } else {
         getUserInfo(code)
-            .then(user =>
-                logins.createSession(user.email, user.name, user.access_token)
-            )
+            // Not saving info to DB for now, just set session cookie
+            // .then(user =>
+            //     logins.createSession(user.email, user.name, user.access_token)
+            // )
             .then(session => {
-                res.cookie(logins.cookieName, session, {
+                res.cookie(logins.cookieName, session.access_token, {
                     domain: req.hostname //require explicit domain set to work with subdomains
                 });
                 res.redirect(req.cookies.whereAmI || "/"); //redirect back or home
