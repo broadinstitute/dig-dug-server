@@ -88,6 +88,7 @@ const oauth2callback = function(req, res, next) {
             //     logins.createSession(user.email, user.name, user.access_token)
             // )
             .then(session => {
+                //session has other info like name and email, but only use access_token for now
                 res.cookie(logins.cookieName, session.access_token, {
                     domain: req.hostname //require explicit domain set to work with subdomains
                 });
