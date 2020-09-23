@@ -4,7 +4,7 @@ port: 8090
 session:
   secret: ""
   cookie:
-    maxAge: 3600000 # one hour, in milliseconds
+    maxAge: 604800000 # one week, in milliseconds
 auth:
   google:
     secretId: google-oauth-portal
