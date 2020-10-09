@@ -88,7 +88,9 @@ function getDomain(host) {
  */
 function eventLog(git_application_version) {
     return (req, res) => {
+        console.log('logging analytics event', req.query)
         req.visitor.setUid(logins.getUserId(req));
+
         // custom dimensions
         // see the analytics account for their descriptions
         // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
@@ -190,7 +192,7 @@ function start(config) {
                 // default GA cookie '_ga' assumed
                 // extract user id from request
                 reqToUserId: logins.getUserId,
-                autoTrackPages: false
+                autoTrackPages: true
             })
         );
     }
