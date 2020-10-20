@@ -208,7 +208,7 @@ function start(config) {
                 // default GA cookie '_ga' assumed
                 // extract user id from request
                 reqToUserId: logins.getUserId,
-                autoTrackPages: true
+                autoTrackPages: false
             })
         );
     }
