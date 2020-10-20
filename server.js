@@ -57,10 +57,7 @@ function create_routes(config, app) {
 
     // Google Analytics event callback (see eventLog function below for further details)
     app.get("/eventlog", eventLog(git_application_versions));
-    app.get(
-        "/pageview", pageview()
-        // eventLog(git_application_versions)
-    );
+    app.get("/pageview", pageview());
 
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
@@ -110,20 +107,27 @@ function eventLog(git_application_version) {
                 dp: req.query.page
             })
             .send();
-        res.send("ok");
+        res.sendStatus(200);
     };
 }
 
 function pageview() {
     return (req, res) => {
+        const referer = req.get('Referer');
+        // extract page from referer: first get rid of protocol, then get everything after the hostname
+        const path = referer.split('://')[1].match(/\/.*/g)[0];
+        const title = path.split('?')[0];
+
         const analyticsTags = {
             dh: req.hostname,
-            dr: req.referer,
+            dr: referer,
+            dp: path,
+            dt: title,
             ua: req.headers['user-agent'],
             uip: (req.headers['x-forwarded-for'].split(',').pop()),
         }
-        req.visitor.pageview("/").send();
-        res.send("ok");
+        req.visitor.pageview(analyticsTags).send();
+        res.sendStatus(200);
     };
 }
 
@@ -209,7 +213,7 @@ function start(config) {
                 // default GA cookie '_ga' assumed
                 // extract user id from request
                 reqToUserId: logins.getUserId,
-                autoTrackPages: true
+                autoTrackPages: false
             })
         );
     }
