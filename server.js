@@ -116,8 +116,6 @@ function pageview() {
         // extract page from referer: first get rid of protocol, then get everything after the hostname
         const path = req.body.uri.split('://')[1].match(/\/.*/g)[0];
         const title = path.split('?')[0];
-        console.log(req.body.uri, path, title)
-
         const analyticsTags = {
             dh: req.hostname,
             dr: req.body.uri,
