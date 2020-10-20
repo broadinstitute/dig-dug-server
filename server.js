@@ -9,7 +9,7 @@ const path = require("path");
 const log4js = require("log4js");
 const google = require("./google");
 const logins = require("./logins");
-
+const bodyParser = require('body-parser');
 let logger = undefined;
 
 function enable_logging(config) {
@@ -57,7 +57,7 @@ function create_routes(config, app) {
 
     // Google Analytics event callback (see eventLog function below for further details)
     app.get("/eventlog", eventLog(git_application_versions));
-    app.get("/pageview", pageview());
+    app.post("/pageview", pageview());
 
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
@@ -113,14 +113,14 @@ function eventLog(git_application_version) {
 
 function pageview() {
     return (req, res) => {
-        const referer = req.get('Referer');
         // extract page from referer: first get rid of protocol, then get everything after the hostname
-        const path = referer.split('://')[1].match(/\/.*/g)[0];
+        const path = req.body.uri.split('://')[1].match(/\/.*/g)[0];
         const title = path.split('?')[0];
+        console.log(req.body.uri, path, title)
 
         const analyticsTags = {
             dh: req.hostname,
-            dr: referer,
+            dr: req.body.uri,
             dp: path,
             dt: title,
             ua: req.headers['user-agent'],
@@ -196,6 +196,8 @@ function start(config) {
 
     // express plugins
     app.use(cookieParser());
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
 
     // Elaborated session management
     app.use(logins.captureClientIp);
