@@ -57,6 +57,10 @@ function create_routes(config, app) {
 
     // Google Analytics event callback (see eventLog function below for further details)
     app.get("/eventlog", eventLog(git_application_versions));
+    app.get(
+        "/pageview", pageview()
+        // eventLog(git_application_versions)
+    );
 
     // main distribution/resource folder
     app.use("/", express.static(config.content.dist));
@@ -106,6 +110,18 @@ function eventLog(git_application_version) {
                 dp: req.query.page
             })
             .send();
+        res.send("ok");
+    };
+}
+
+function pageview() {
+    return (req, res) => {
+        req.visitor.pageview({
+            dh: req.hostname,
+            dr: req.referer,
+            ua: req.headers['user-agent'],
+            uip: (req.headers['x-forwarded-for'].split(',').pop()),
+        }).send();
         res.send("ok");
     };
 }
