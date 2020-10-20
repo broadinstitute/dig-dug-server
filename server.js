@@ -116,12 +116,13 @@ function eventLog(git_application_version) {
 
 function pageview() {
     return (req, res) => {
-        req.visitor.pageview({
+        const analyticsTags = {
             dh: req.hostname,
             dr: req.referer,
             ua: req.headers['user-agent'],
             uip: (req.headers['x-forwarded-for'].split(',').pop()),
-        }).send();
+        }
+        req.visitor.pageview("/").send();
         res.send("ok");
     };
 }
