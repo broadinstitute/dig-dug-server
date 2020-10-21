@@ -188,7 +188,7 @@ https:
   crt: <path/to/https/cert.crt>
 ```
 
-Since adding this into your config doesn't override anything else, you can run both an HTTP and an HTTPS server at the same time (with the HTTP server using whatever `port` is given at the top of your config).
+Since adding this into your config doesn't change anything else, you can run both an HTTP and an HTTPS server at the same time (with the HTTP server using whatever `port` is given at the top of your config).
 
 If you need your own SSL key and certificate for testing purposes, you can create your own using OpenSSL with the following command (changing the names path of the key as you need to):
 
