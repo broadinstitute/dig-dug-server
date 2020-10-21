@@ -176,3 +176,24 @@ Log into the system using a Google account.
 For example:
 
 `http://localhost:8090/www/manhattan.html`
+
+### Using HTTPS
+
+This server can also be configured to process traffic using the HTTPS protocol. When you run the server app in node, an HTTPS server will spawn listening in on a port of your choice if you add or override `config.yml` with the following properties: 
+
+```yaml
+https:
+  port: 8000
+  key: <path/to/https/key.key>
+  crt: <path/to/https/cert.crt>
+```
+
+Since adding this into your config doesn't override anything else, you can run both an HTTP and an HTTPS server at the same time (with the HTTP server using whatever `port` is given at the top of your config).
+
+If you need your own SSL key and certificate for testing purposes, you can create your own using OpenSSL with the following command (changing the names path of the key as you need to):
+
+```sh
+$ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout path/to/selfsigned.key -out path/to/selfsigned.crt
+```
+
+Further information on how this works can be found in [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-16-04).
