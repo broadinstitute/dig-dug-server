@@ -114,17 +114,19 @@ function eventLog(git_application_version) {
 function pageview() {
     return (req, res) => {
         // extract page from referer: first get rid of protocol, then get everything after the hostname
+        const referer = req.get('Referer');
         const path = req.body.uri.split('://')[1].match(/\/.*/g)[0];
         const title = path.split('?')[0];
         const analyticsTags = {
             dh: req.hostname,
-            dr: req.body.uri,
+            dr: referer,
             dp: path,
             dt: title,
             ua: req.headers['user-agent'],
             uip: (req.headers['x-forwarded-for'].split(',').pop()),
         }
-        req.visitor.pageview(analyticsTags).send();
+        // req.visitor.pageview(analyticsTags).send();
+        req.visitor.pageview(path, req.hostname).send()
         res.sendStatus(200);
     };
 }
