@@ -231,7 +231,8 @@ function start(config) {
     google.useConfig(config);
 
     // get metadata before starting server
-    app.listen(port, () => logger.info(`Server started on port ${port}...`));
+    // app.listen(port, () => logger.info(`Server started on port ${port}...`));
+    return app;
 }
 
 module.exports = {
