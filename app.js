@@ -36,7 +36,7 @@ if (!!loadedConfig.port) {
     httpServer.listen(loadedConfig.port, () => logger.info(`HTTP Server started on port ${loadedConfig.port}...`));
 }
 
-if (!!loadedConfig.https) {
+if (!!loadedConfig.https && !!loadedConfig.https.key && !!loadedConfig.https.crt) {
     var privateKey  = fs.readFileSync(loadedConfig.https.key, 'utf8');
     var certificate = fs.readFileSync(loadedConfig.https.crt, 'utf8');
     var credentials = { key: privateKey, cert: certificate };
