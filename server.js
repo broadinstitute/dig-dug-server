@@ -126,6 +126,7 @@ function pageview() {
             uip: (req.headers['x-forwarded-for'].split(',').pop()),
         }
         // req.visitor.pageview(analyticsTags).send();
+        // console.log(req.body, referer, path, title);
         req.visitor.pageview(analyticsTags).send()
         res.sendStatus(200);
     };
