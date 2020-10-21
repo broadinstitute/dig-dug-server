@@ -125,6 +125,7 @@ function pageview() {
             ua: req.headers['user-agent'],
             uip: (req.headers['x-forwarded-for'].split(',').pop()),
         }
+        logger.info(`Pageview with analytics information`, analyticsTags)
         // req.visitor.pageview(analyticsTags).send();
         // console.log(req.body, referer, path, title);
         req.visitor.pageview(analyticsTags).send()
