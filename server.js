@@ -113,22 +113,27 @@ function eventLog(git_application_version) {
 
 function pageview() {
     return (req, res) => {
+
         // extract page from referer: first get rid of protocol, then get everything after the hostname
         const referer = req.get('Referer');
+        logger.info('pageview referrer', referer);
+
         const path = req.body.uri.split('://')[1].match(/\/.*/g)[0];
-        const title = path.split('?')[0];
+        const page = title = path.split('?')[0];
+        const query = path.split('?')[1];
+
         const analyticsTags = {
             dh: req.hostname,
-            dr: referer,
-            dp: path,
-            dt: title,
-            ua: req.headers['user-agent'],
-            uip: (req.headers['x-forwarded-for'].split(',').pop()),
+            dl: referer,
+            // dt: title,
+            // ua: req.headers['user-agent'],
+            // uip: (req.headers['x-forwarded-for'].split(',').pop()),
+            // cs: req.hostname,
+            // cm: 'Referral',
         }
-        logger.info(`Pageview with analytics information`, analyticsTags)
         // req.visitor.pageview(analyticsTags).send();
         // console.log(req.body, referer, path, title);
-        req.visitor.pageview(analyticsTags).send()
+        req.visitor.pageview(path, req.hostname, title).send()
         res.sendStatus(200);
     };
 }
@@ -217,7 +222,7 @@ function start(config) {
                 // default GA cookie '_ga' assumed
                 // extract user id from request
                 reqToUserId: logins.getUserId,
-                autoTrackPages: true
+                autoTrackPages: false
             })
         );
     }
