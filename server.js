@@ -124,7 +124,7 @@ function pageview() {
 
         req.visitor.pageview(page, req.hostname, path, {
             dl: req.body.currentPage,
-            cs: req.body.previousPage || req.body.currentPage,
+            cs: req.body.previousPage || req.hostname,
             cm: 'referral',
         }).send();
 
