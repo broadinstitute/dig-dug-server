@@ -122,12 +122,12 @@ function pageview() {
         const page = title = path.split('?')[0];
         const query = path.split('?')[1];
 
-        req.visitor.pageview(path, req.hostname, title, {
+        req.visitor.pageview(page, req.hostname, path, {
             dr: req.body.uri,
             cs: req.hostname,
             cm: 'referral',
         }).send();
-        
+
         res.sendStatus(200);
     };
 }
