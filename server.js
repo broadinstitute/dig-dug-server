@@ -122,18 +122,12 @@ function pageview() {
         const page = title = path.split('?')[0];
         const query = path.split('?')[1];
 
-        const analyticsTags = {
-            dh: req.hostname,
-            dl: referer,
-            // dt: title,
-            // ua: req.headers['user-agent'],
-            // uip: (req.headers['x-forwarded-for'].split(',').pop()),
-            // cs: req.hostname,
-            // cm: 'Referral',
-        }
-        // req.visitor.pageview(analyticsTags).send();
-        // console.log(req.body, referer, path, title);
-        req.visitor.pageview(path, req.hostname, title).send()
+        req.visitor.pageview(path, req.hostname, title, {
+            dr: req.body.uri,
+            cs: req.hostname,
+            cm: 'referral',
+        }).send();
+        
         res.sendStatus(200);
     };
 }
