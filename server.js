@@ -117,6 +117,7 @@ function pageview() {
         // extract page from referer: first get rid of protocol, then get everything after the hostname
         const referer = req.get('Referer');
         logger.info('pageview referrer', req.body.currentPage, req.body.previousPage || req.body.currentPage);
+        req.visitor.setUid(logins.getUserId(req));
 
         const path = req.body.currentPage.split('://')[1].match(/\/.*/g)[0];
         const page = title = path.split('?')[0];
