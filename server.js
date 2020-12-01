@@ -122,12 +122,12 @@ function pageview() {
         const path = req.body.currentPage.split('://')[1].match(/\/.*/g)[0];
         const page = title = path.split('?')[0];
         const query = path.split('?')[1];
-
         req.visitor.pageview(page, req.hostname, path, {
             dl: req.body.currentPage,
             dr: req.body.previousPage,
             cs: req.hostname,
             cm: 'referral',
+            uip: req.headers['x-forwarded-for'].split(',').pop() || req.connection.remoteAddress || req.socket.remoteAddress
         }).send();
 
         res.sendStatus(200);
