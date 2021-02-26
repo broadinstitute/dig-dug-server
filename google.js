@@ -75,7 +75,10 @@ const logInLink = async function(req, res, next) {
 };
 
 const oauth2callback = function(req, res, next) {
-    const uri = `${req.protocol}://${req.headers.host}`;
+    const uri =
+        req.headers.port === 80
+            ? `${req.protocol}://${req.headers.hostname}`
+            : `${req.protocol}://${req.headers.host}`;
     const qs = new url.URL(req.url, uri).searchParams;
     let code = qs.get("code");
 
