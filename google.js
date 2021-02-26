@@ -45,7 +45,7 @@ const useConfig = async function(config) {
 function getAuthenticatedClient(config, keys) {
     return new Promise((resolve, reject) => {
         //console.log("keys: " + JSON.stringify(keys, null, 4));
-        let callback = `http://${config.auth.google.callbackHost}${keys.redirect_uri_path}`;
+        let callback = `https://${config.auth.google.callbackHost}${keys.redirect_uri_path}`;
         const oAuth2Client = new OAuth2Client(
             keys.client_id,
             keys.client_secret,
