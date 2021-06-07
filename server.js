@@ -89,25 +89,28 @@ function getDomain(host) {
  */
 function eventLog(git_application_version) {
     return (req, res) => {
-        console.log('logging analytics event', req.query)
-        req.visitor.setUid(logins.getUserId(req));
+        if (!!req.visitor) {
+            req.visitor.setUid(logins.getUserId(req));
 
-        // custom dimensions
-        // see the analytics account for their descriptions
-        // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
-        // req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
-        // req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
+            // custom dimensions
+            // see the analytics account for their descriptions
+            // !!! NOTE: you will have to define these if you migrate analytics accounts! !!!
+            // req.visitor.set("cd1", git_portal_version)        // gitPortalVersion in Analytics
+            // req.visitor.set("cd2", git_server_version)        // gitServerVersion in Analytics
 
-        req.visitor
-            .event({
-                ec: req.query.category,
-                ea: req.query.action,
-                el: req.query.label + ";" + git_application_version,
-                ev: 0,
-                dp: req.query.page
-            })
-            .send();
-        res.sendStatus(200);
+            req.visitor
+                .event({
+                    ec: req.query.category,
+                    ea: req.query.action,
+                    el: req.query.label + ";" + git_application_version,
+                    ev: 0,
+                    dp: req.query.page
+                })
+                .send();
+
+                res.sendStatus(200);
+            }
+        res.sendStatus(204)
     };
 }
 
@@ -117,20 +120,23 @@ function pageview() {
         // extract page from referer: first get rid of protocol, then get everything after the hostname
         const referer = req.get('Referer');
         logger.info('pageview referrer', req.body.currentPage, req.body.previousPage || req.body.currentPage);
-        req.visitor.setUid(logins.getUserId(req));
+        if (!!req.visitor) {
+            req.visitor.setUid(logins.getUserId(req));
 
-        const path = req.body.currentPage.split('://')[1].match(/\/.*/g)[0];
-        const page = title = path.split('?')[0];
-        const query = path.split('?')[1];
-        req.visitor.pageview(page, req.hostname, path, {
-            dl: req.body.currentPage,
-            dr: req.body.previousPage,
-            cs: req.hostname,
-            cm: 'referral',
-            uip: req.headers['x-forwarded-for'].split(',').pop() || req.connection.remoteAddress || req.socket.remoteAddress
-        }).send();
-
-        res.sendStatus(200);
+            const path = req.body.currentPage.split('://')[1].match(/\/.*/g)[0];
+            const page = title = path.split('?')[0];
+            const query = path.split('?')[1];
+            req.visitor.pageview(page, req.hostname, path, {
+                dl: req.body.currentPage,
+                dr: req.body.previousPage,
+                cs: req.hostname,
+                cm: 'referral',
+                uip: req.headers['x-forwarded-for'].split(',').pop() || req.connection.remoteAddress || req.socket.remoteAddress
+            }).send();        
+            
+            res.sendStatus(200);
+        }
+        res.sendStatus(204)
     };
 }
 
