@@ -45,7 +45,7 @@ const useConfig = async function(config) {
 function getAuthenticatedClient(config, keys) {
     return new Promise((resolve, reject) => {
         //console.log("keys: " + JSON.stringify(keys, null, 4));
-        let callback = `http://${config.auth.google.callbackHost}${keys.redirect_uri_path}`;
+        let callback = `https://${config.auth.google.callbackHost}${keys.redirect_uri_path}`;
         const oAuth2Client = new OAuth2Client(
             keys.client_id,
             keys.client_secret,
@@ -75,7 +75,10 @@ const logInLink = async function(req, res, next) {
 };
 
 const oauth2callback = function(req, res, next) {
-    const uri = `${req.protocol}://${req.headers.host}`;
+    const uri =
+        req.headers.port === 80
+            ? `${req.protocol}://${req.headers.hostname}`
+            : `${req.protocol}://${req.headers.host}`;
     const qs = new url.URL(req.url, uri).searchParams;
     let code = qs.get("code");
 
