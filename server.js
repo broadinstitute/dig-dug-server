@@ -89,6 +89,8 @@ function getDomain(host) {
  */
 function eventLog(git_application_version) {
     return (req, res) => {
+        // if google analytics is configured - if a UA code is provided under the 
+        // configuration property `auth.google.UAId` - then execute the logging through google analytics
         if (!!req.visitor) {
             req.visitor.setUid(logins.getUserId(req));
 
@@ -107,10 +109,8 @@ function eventLog(git_application_version) {
                     dp: req.query.page
                 })
                 .send();
-
-                res.sendStatus(200);
-            }
-        res.sendStatus(204)
+        }
+        res.sendStatus(200)
     };
 }
 
@@ -120,6 +120,9 @@ function pageview() {
         // extract page from referer: first get rid of protocol, then get everything after the hostname
         const referer = req.get('Referer');
         logger.info('pageview referrer', req.body.currentPage, req.body.previousPage || req.body.currentPage);
+        
+        // if google analytics is configured - if a UA code is provided under the 
+        // configuration property `auth.google.UAId` - then execute the logging through google analytics
         if (!!req.visitor) {
             req.visitor.setUid(logins.getUserId(req));
 
@@ -134,9 +137,9 @@ function pageview() {
                 uip: req.headers['x-forwarded-for'].split(',').pop() || req.connection.remoteAddress || req.socket.remoteAddress
             }).send();        
             
-            res.sendStatus(200);
+            // res.sendStatus(200);
         }
-        res.sendStatus(204)
+        res.sendStatus(200)
     };
 }
 
