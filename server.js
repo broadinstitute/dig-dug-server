@@ -110,6 +110,8 @@ function eventLog(git_application_version) {
                 })
                 .send();
         }
+        console.log(req.headers)
+
         res.sendStatus(200)
     };
 }
@@ -120,7 +122,7 @@ function pageview() {
         // extract page from referer: first get rid of protocol, then get everything after the hostname
         const referer = req.get('Referer');
         logger.info('pageview referrer', req.body.currentPage, req.body.previousPage || req.body.currentPage);
-        
+
         // if google analytics is configured - if a UA code is provided under the 
         // configuration property `auth.google.UAId` - then execute the logging through google analytics
         if (!!req.visitor) {
@@ -131,12 +133,13 @@ function pageview() {
             const query = path.split('?')[1];
             req.visitor.pageview(page, req.hostname, path, {
                 dl: req.body.currentPage,
-                dr: req.body.previousPage,
+                dr: req.body.previousPage || req.headers['referer'],
                 cs: req.hostname,
                 cm: 'referral',
+                ul: req.headers['accept-language'].split(';')[0].split(',')[0],
+                ua: req.headers['user-agent'],
                 uip: req.headers['x-forwarded-for'].split(',').pop() || req.connection.remoteAddress || req.socket.remoteAddress
             }).send();        
-            
             // res.sendStatus(200);
         }
         res.sendStatus(200)
